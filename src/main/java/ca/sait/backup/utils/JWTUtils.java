@@ -39,13 +39,13 @@ public class JWTUtils {
     /**
      * token prefix
      */
-    private  static final String TOKEN_PREFIX = "xdclass";
+    private  static final String TOKEN_PREFIX = "backup";
 
 
     /**
      * subject
      */
-    private  static final String SUBJECT = "xdclass";
+    private  static final String SUBJECT = "backup";
 
 
     /**
