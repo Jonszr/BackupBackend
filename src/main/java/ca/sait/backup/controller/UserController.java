@@ -5,12 +5,14 @@ import ca.sait.backup.model.request.LoginRequest;
 import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
+@Validated
 @RequestMapping("api/v1/pri/user")
 public class UserController {
 

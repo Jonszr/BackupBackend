@@ -7,19 +7,28 @@ import ca.sait.backup.utils.CommonUtils;
 import ca.sait.backup.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.Validator;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 @Service
+@Validated
 public class UserServicelmpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private Validator validator;
 
     /**
      * Create a user
@@ -32,7 +41,8 @@ public class UserServicelmpl implements UserService {
         User user = parseToUser(userInfo);
 
         if( user != null){
-            return userMapper.create(user);
+
+            return userMapper.create( user);
         }else {
             return -1;
         }
@@ -81,6 +91,18 @@ public class UserServicelmpl implements UserService {
             String pwd = userInfo.get("pwd");
             //MD5加密
             user.setPwd(CommonUtils.MD5(pwd));
+            Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+            if (!violations.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+
+
+                for (ConstraintViolation<User> constraintViolation : violations) {
+                    sb.append(constraintViolation.getMessage());
+                    break;
+                }
+                throw new ConstraintViolationException(sb.toString(), violations);
+            }
 
             return user;
         }else {

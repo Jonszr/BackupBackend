@@ -3,9 +3,10 @@ package ca.sait.backup.mapper;
 import ca.sait.backup.model.entity.User;
 import org.apache.ibatis.annotations.Param;
 
+
 public interface UserMapper {
 
-    int create(User user);
+    int create( User user);
 
     User findByPhone(@Param("phone") String phone);
 

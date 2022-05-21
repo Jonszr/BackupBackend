@@ -5,8 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.hibernate.annotations.Table;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -21,15 +28,19 @@ import java.util.Date;
 public class User {
 
     private Integer id;
-    @NotNull
+
+    @NotEmpty(message = "Name is mandatory")
+
     private String name;
 
     @JsonIgnore
+    @NotEmpty(message = "password is mandatory")
+    @Size(min = 4, max = 15,message = "Password must be between 4 to 15 characters")
     private String pwd;
 
     @JsonProperty("head_img")
     private String headImg;
-
+    @NotEmpty(message = "password is mandatory")
     private String phone;
 
     @JsonProperty("create_time")
