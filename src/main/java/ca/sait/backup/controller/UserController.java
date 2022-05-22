@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -31,10 +32,10 @@ public class UserController {
      * @return
      */
     @PostMapping("register")
-    public JsonData register(@RequestBody Map<String,String> userInfo ){
+    public JsonData register(@RequestBody Map<String,String> userInfo ) throws MessagingException {
 
         int rows = userService.create(userInfo);
-        emailService.sendEmail(userInfo.get("email"),"Thank you! Register successfully!","Welcome!");
+        emailService.sendHtmlMessage(userInfo.get("email"),"Thank you! Register successfully!","Welcome!");
 
         return rows == 1 ? JsonData.buildSuccess(): JsonData.buildError("register failed, please try again");
 

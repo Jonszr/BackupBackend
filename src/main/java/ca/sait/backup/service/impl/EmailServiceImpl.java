@@ -1,20 +1,30 @@
 package ca.sait.backup.service.impl;
 
 import ca.sait.backup.service.EmailService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import java.util.Properties;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.nio.charset.StandardCharsets;
 
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
     @Autowired
     private JavaMailSender emailSender;
-//
+    @Autowired
+    private final SpringTemplateEngine templateEngine;
+
+
+
+    //
 //    @Override
 //    public JavaMailSender getJavaMailSender() {
 //        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -32,15 +42,29 @@ public class EmailServiceImpl implements EmailService {
 //
 //        return mailSender;
 //    }
+    public void sendHtmlMessage(String to, String subject,String text) throws MessagingException {
+    MimeMessage message = emailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+    Context context = new Context();
+    context.setVariable("message",text);
+    helper.setFrom("noreply@backup.com");
+    helper.setTo(to);
+    helper.setSubject(subject);
+    String html = templateEngine.process("RegisterMail", context);
 
-    @Override
-    public void sendEmail(String to, String subject,String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@backup.com");
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
+    helper.setText(html, true);
 
-        emailSender.send(message);
-    }
+    //log.info("Sending email: {} with html body: {}", email, html);
+    emailSender.send(message);
+}
+//    @Override
+//    public void sendEmail(String to, String subject,String text) {
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setFrom("noreply@backup.com");
+//        message.setTo(to);
+//        message.setSubject(subject);
+//        message.setText(text);
+//
+//        emailSender.send(message);
+//    }
 }
