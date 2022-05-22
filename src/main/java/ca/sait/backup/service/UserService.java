@@ -14,7 +14,7 @@ public interface UserService {
     int create(Map<String, String> userInfo);
 
 
-    String findByPhoneAndPwd(String phone, String pwd);
+    String findByEmailAndPwd(String email, String pwd);
 
     User findByUserId(Integer userId);
 }

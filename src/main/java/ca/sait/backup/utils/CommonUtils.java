@@ -3,7 +3,8 @@ package ca.sait.backup.utils;
 import java.security.MessageDigest;
 
 /**
- * 工具类
+ * Tool class
+ * encryption password tool
  */
 public class CommonUtils {
 

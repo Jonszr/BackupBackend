@@ -53,9 +53,9 @@ public class UserServicelmpl implements UserService {
 
 
     @Override
-    public String findByPhoneAndPwd(String phone, String pwd) {
+    public String findByEmailAndPwd(String email, String pwd) {
 
-        User user = userMapper.findByPhoneAndPwd(phone, CommonUtils.MD5(pwd));
+        User user = userMapper.findByEmailAndPwd(email, CommonUtils.MD5(pwd));
 
         if(user == null){
             return null;
@@ -81,13 +81,13 @@ public class UserServicelmpl implements UserService {
      */
     private User parseToUser(Map<String,String> userInfo) {
 
-        if(userInfo.containsKey("phone") && userInfo.containsKey("pwd") && userInfo.containsKey("name")){
+        if(userInfo.containsKey("email") && userInfo.containsKey("pwd") && userInfo.containsKey("name")){
 
             User user = new User();
             user.setName(userInfo.get("name"));
             user.setHeadImg(getRandomImg());
             user.setCreateTime(new Date());
-            user.setPhone(userInfo.get("phone"));
+            user.setEmail(userInfo.get("email"));
             String pwd = userInfo.get("pwd");
             //MD5加密
             user.setPwd(CommonUtils.MD5(pwd));

@@ -4,15 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.hibernate.annotations.Table;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -35,18 +29,27 @@ public class User {
 
     @JsonIgnore
     @NotEmpty(message = "password is mandatory")
-    @Size(min = 4, max = 15,message = "Password must be between 4 to 15 characters")
+
     private String pwd;
 
     @JsonProperty("head_img")
     private String headImg;
-    @NotEmpty(message = "password is mandatory")
+
     private String phone;
+    @NotEmpty(message = "email is mandatory")
+    private String email;
 
     @JsonProperty("create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     @Override
     public String toString() {

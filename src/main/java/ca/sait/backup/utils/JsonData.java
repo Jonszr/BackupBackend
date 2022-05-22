@@ -1,5 +1,8 @@
 package ca.sait.backup.utils;
 
+/**
+ * Business logic json data form
+ */
 public class JsonData {
 
     /**
@@ -28,6 +31,7 @@ public class JsonData {
 
     /**
      * 成功，不用返回数据
+     * success, no return value.
      * @return
      */
     public static JsonData buildSuccess(){
@@ -36,6 +40,7 @@ public class JsonData {
 
     /**
      * 成功，返回数据
+     * success, return value.
      * @param data
      * @return
      */
@@ -46,6 +51,7 @@ public class JsonData {
 
     /**
      * 失败，固定状态码
+     * failed,unchangeable -1 code and return error message
      * @param msg
      * @return
      */
@@ -56,6 +62,7 @@ public class JsonData {
 
     /**
      * 失败，自定义错误码和信息
+     * failed, changeable code and message
      * @param code
      * @param msg
      * @return

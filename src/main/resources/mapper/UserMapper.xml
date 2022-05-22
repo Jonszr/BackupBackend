@@ -5,9 +5,9 @@
 
     <insert id="create" parameterType="User">
 
-        INSERT  INTO user (name, pwd, head_img, phone , create_time)
+        INSERT  INTO user (name, pwd, head_img, phone , create_time,email)
         values (#{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR},
-        #{phone,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP})
+        #{phone,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{email,jdbcType = VARCHAR})
 
     </insert>
 
@@ -22,9 +22,9 @@
 
 
     <!--根据手机号和密码找用户-->
-    <select id="findByPhoneAndPwd" resultType="User">
+    <select id="findByEmailAndPwd" resultType="User">
 
-        select  * from user where phone =#{phone} and pwd = #{pwd}
+        select  * from user where email =#{email} and pwd = #{pwd}
 
 
     </select>
