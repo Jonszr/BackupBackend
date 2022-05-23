@@ -11,7 +11,11 @@
 
     </insert>
 
-
+    <update id="update" parameterType="User">
+        UPDATE user SET name = #{name,jdbcType=VARCHAR},pwd = #{pwd,jdbcType=VARCHAR},head_img = #{headImg,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR},create_time = #{createTime,jdbcType=TIMESTAMP},email = #{email,jdbcType = VARCHAR}
+        Where id = #{id}
+    </update>
 
     <!--根据手机号查询用户信息-->
     <select id="findByPhone" resultType="User">

@@ -14,4 +14,5 @@ public interface UserMapper {
     User findByEmailAndPwd(@Param("email") String email, @Param("pwd") String pwd);
 
     User findByUserId(@Param("user_id") Integer userId);
+    int update(User user);
 }

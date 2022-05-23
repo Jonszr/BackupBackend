@@ -37,8 +37,14 @@ public class UserController {
         int rows = userService.create(userInfo);
         emailService.sendHtmlMessage(userInfo.get("email"),"Thank you! Register successfully!","Welcome!");
 
-        return rows == 1 ? JsonData.buildSuccess(): JsonData.buildError("register failed, please try again");
+        return rows == 1 ? JsonData.buildSuccess("Register successfully!"): JsonData.buildError("register failed, please try again");
 
+    }
+    @PostMapping("update")
+    public JsonData update(@RequestBody Map<String,String> updatedUserInfo) throws MessagingException {
+        int rows = userService.update(updatedUserInfo);
+        emailService.sendHtmlMessage(updatedUserInfo.get("email"),"Your information updated successfully!","Thank you!");
+        return rows == 1 ? JsonData.buildSuccess("update successfully!"): JsonData.buildError("update failed, please try again");
     }
 
 
