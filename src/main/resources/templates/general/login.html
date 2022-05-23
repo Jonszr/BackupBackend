@@ -133,6 +133,7 @@
 
 <!-- BEGIN: Page Vendor JS-->
 <script src="/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+<script src="/app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
 <!-- END: Page Vendor JS-->
 
 <!-- BEGIN: Theme JS-->
@@ -143,6 +144,7 @@
 <!-- BEGIN: Page JS-->
 <script src="/app-assets/js/scripts/pages/auth-login.js"></script>
 <script src="/custom-scripts/axios.min.js"></script>
+<script src="/app-assets/js/scripts/extensions/ext-component-sweet-alerts.min.js"></script>
 <!-- END: Page JS-->
 
 <script>
@@ -164,12 +166,21 @@
             return res;
         }
 
+        async function triggerLoginError() {
+
+            const { value: requestMessage } = await Swal.fire({
+                icon: 'error',
+                title: 'Invalid Credentials'
+            });
+
+        }
+
         async function ProcessLogin() {
 
             let username = UsernameInput.value;
             let password = PasswordInput.value;
 
-            console.log("Logging in right now", username, password);
+            console.log("Logging in right now!!!!", username, password);
 
             let loginResponse = false;
 
@@ -180,13 +191,17 @@
                     password: password
                 });
 
+                if (loginResponse.data.code == 409) {
+                    throw new Exception("Invalid credentials");
+                }
+
             }catch(error) {
                 console.log("Exception sending login", error);
+                triggerLoginError();
             }
 
             console.log(loginResponse);
 
-            
         }
 
     </script>
