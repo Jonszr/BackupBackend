@@ -13,7 +13,6 @@ public interface UserService {
      */
     int create(Map<String, String> userInfo);
 
-
     String findByEmailAndPwd(String email, String pwd);
 
     User findByUserId(Integer userId);
