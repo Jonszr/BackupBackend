@@ -47,7 +47,15 @@ public class JsonData {
     public static JsonData buildSuccess(Object data){
         return new JsonData(0,data,null);
     }
-
+    /**
+     * 成功，返回消息
+     * success, return message.
+     * @param msg
+     * @return
+     */
+    public static JsonData buildSuccess(String msg){
+        return new JsonData(0,null,msg);
+    }
 
     /**
      * 失败，固定状态码

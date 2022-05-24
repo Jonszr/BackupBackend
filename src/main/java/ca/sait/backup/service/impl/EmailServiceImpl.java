@@ -1,5 +1,6 @@
 package ca.sait.backup.service.impl;
 
+import ca.sait.backup.exception.XDException;
 import ca.sait.backup.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +43,24 @@ public class EmailServiceImpl implements EmailService {
 //
 //        return mailSender;
 //    }
-    public void sendHtmlMessage(String to, String subject,String text) throws MessagingException {
-    MimeMessage message = emailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
-    Context context = new Context();
-    context.setVariable("message",text);
-    helper.setFrom("noreply@backup.com");
-    helper.setTo(to);
-    helper.setSubject(subject);
-    String html = templateEngine.process("RegisterMail", context);
+    public void sendHtmlMessage(String to, String subject,String text) {
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+            Context context = new Context();
+            context.setVariable("message", text);
+            helper.setFrom("noreply@backup.com");
+            helper.setTo(to);
+            helper.setSubject(subject);
+            String html = templateEngine.process("RegisterMail", context);
 
-    helper.setText(html, true);
+            helper.setText(html, true);
 
-    //log.info("Sending email: {} with html body: {}", email, html);
-    emailSender.send(message);
+            //log.info("Sending email: {} with html body: {}", email, html);
+            emailSender.send(message);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 }
 //    @Override
 //    public void sendEmail(String to, String subject,String text) {

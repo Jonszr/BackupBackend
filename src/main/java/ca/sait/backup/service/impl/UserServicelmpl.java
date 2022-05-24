@@ -5,17 +5,15 @@ import ca.sait.backup.model.entity.User;
 import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.CommonUtils;
 import ca.sait.backup.utils.JWTUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 import javax.validation.Validator;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -29,6 +27,7 @@ public class UserServicelmpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private Validator validator;
+
 
     /**
      * Create a user
@@ -49,6 +48,46 @@ public class UserServicelmpl implements UserService {
 
     }
 
+    /**
+     * This method only can update [email, password, phone, head_image,name]
+     * @param updatedUserInfo
+     * @return
+     */
+    @Override
+    public int update(Map<String, String> updatedUserInfo) {
+        String id = updatedUserInfo.get("id");
+
+        User user =  findByUserId(Integer.parseInt(id));
+
+
+        if (user != null){
+            for(Map.Entry<String,String> userinfo : updatedUserInfo.entrySet()){
+                switch (userinfo.getKey()) {
+                    case "name":
+                        user.setName(userinfo.getValue());
+                        break;
+                    case "email":
+                        user.setEmail(userinfo.getValue());
+                        break;
+                    case "pwd":
+                        user.setPwd(CommonUtils.MD5(userinfo.getValue()));
+                        break;
+                    case "head_img":
+                        user.setHeadImg(userinfo.getValue());
+                        break;
+                    case "phone":
+                        user.setPhone(userinfo.getValue());
+                        break;
+                }
+            }
+            validate(user);
+            return userMapper.update(user);
+
+
+        }else {
+            return -1;
+        }
+    }
 
     @Override
     public String findByEmailAndPwd(String email, String pwd) {
@@ -87,20 +126,12 @@ public class UserServicelmpl implements UserService {
             user.setCreateTime(new Date());
             user.setEmail(userInfo.get("email"));
             String pwd = userInfo.get("pwd");
-            //MD5加密
+            user.setPwd(pwd);
+
+            validate(user);
             user.setPwd(CommonUtils.MD5(pwd));
-            Set<ConstraintViolation<User>> violations = validator.validate(user);
-
-            if (!violations.isEmpty()) {
-                StringBuilder sb = new StringBuilder();
 
 
-                for (ConstraintViolation<User> constraintViolation : violations) {
-                    sb.append(constraintViolation.getMessage());
-                    break;
-                }
-                throw new ConstraintViolationException(sb.toString(), violations);
-            }
 
             return user;
         }else {
@@ -125,6 +156,25 @@ public class UserServicelmpl implements UserService {
         Random random = new Random();
         int index = random.nextInt(size);
         return headImg[index];
+    }
+
+    /**
+     * User validator
+     * @param user
+     */
+    private void validate(User user){
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+
+
+            for (ConstraintViolation<User> constraintViolation : violations) {
+                sb.append(constraintViolation.getMessage());
+                break;
+            }
+            throw new ConstraintViolationException(sb.toString(), violations);
+        }
     }
 
 }
