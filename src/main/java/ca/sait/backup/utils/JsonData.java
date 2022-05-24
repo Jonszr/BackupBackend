@@ -64,7 +64,7 @@ public class JsonData {
      * @return
      */
     public static JsonData buildError(String  msg){
-        return new JsonData(-1 ,null,msg);
+        return new JsonData(-1, null,msg);
     }
 
 

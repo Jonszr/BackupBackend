@@ -83,11 +83,11 @@ public class UserServicelmpl implements UserService {
             validate(user);
             return userMapper.update(user);
 
+
         }else {
             return -1;
         }
     }
-
 
     @Override
     public String findByEmailAndPwd(String email, String pwd) {

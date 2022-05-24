@@ -30,13 +30,18 @@
 
         select  * from user where email =#{email} and pwd = #{pwd}
 
-
     </select>
 
 
     <select id="findByUserId" resultType="User">
 
       select  * from user where id=#{user_id}
+
+    </select>
+
+    <select id="getProjectsForUser">
+
+
 
     </select>
 

@@ -1,13 +1,16 @@
 package ca.sait.backup.controller;
 
+import ca.sait.backup.exception.CustomExceptionHandler;
 import ca.sait.backup.model.entity.User;
 import ca.sait.backup.model.request.LoginRequest;
 import ca.sait.backup.service.EmailService;
 import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +20,10 @@ import java.util.Map;
 @RequestMapping("api/v1/pri/user")
 public class UserController {
 
-
-
     @Autowired
     private UserService userService;
     @Autowired
     private EmailService emailService;
-
-
 
     /**
      * register interface
@@ -58,7 +57,11 @@ public class UserController {
 
         String token = userService.findByEmailAndPwd(loginRequest.getEmail(), loginRequest.getPwd());
 
-        return token == null ?JsonData.buildError("login failed, please check your password or account right"): JsonData.buildSuccess(token);
+        if (token == null) {
+            return JsonData.buildError(409, "Unauthorized");
+        }
+
+        return JsonData.buildSuccess(token);
 
     }
 
@@ -82,12 +85,5 @@ public class UserController {
         return JsonData.buildSuccess(user);
 
     }
-
-
-
-
-
-
-
 
 }

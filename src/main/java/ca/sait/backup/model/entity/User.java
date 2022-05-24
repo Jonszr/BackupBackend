@@ -10,13 +10,18 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-/**
- * `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
- *   `name` varchar(128) DEFAULT NULL COMMENT 'name',
- *   `pwd` varchar(124) DEFAULT NULL COMMENT 'password',
- *   `head_img` varchar(524) DEFAULT NULL COMMENT 'head image',
- *   `phone` varchar(64) DEFAULT '' COMMENT 'phone number',
- *   `create_time` datetime DEFAULT NULL COMMENT 'time created',
+/* SQL To create the table.
+
+CREATE TABLE user (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`name` varchar(128) DEFAULT NULL COMMENT 'name',
+`email` varchar(128) DEFAULT NULL COMMENT 'email',
+`pwd` varchar(124) DEFAULT NULL COMMENT 'password',
+`head_img` varchar(524) DEFAULT NULL COMMENT 'head image',
+`phone` varchar(64) DEFAULT '' COMMENT 'phone number',
+`create_time` datetime DEFAULT NULL COMMENT 'time created'
+);
+
  */
 
 public class User {
