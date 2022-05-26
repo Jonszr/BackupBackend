@@ -90,7 +90,7 @@
                         <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
                             <h2 class="card-title fw-bold mb-1">Welcome to Backup Buddy! 👋</h2>
                             <p class="card-text mb-2">Please sign-in to your account</p>
-                            <form class="auth-login-form mt-2" action="index.html" method="POST">
+                            <form class="auth-login-form mt-2"> <!-- action="index.html" method="POST" -->
                                 <div class="mb-1">
                                     <label class="form-label" for="login-email">Email</label>
                                     <input class="form-control" id="login-email" type="text" name="login-email" placeholder="john@example.com" aria-describedby="login-email" autofocus="" tabindex="1" />
@@ -109,12 +109,17 @@
                                         <label class="form-check-label" for="remember-me"> Remember Me</label>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary w-100" tabindex="4" onclick="ProcessLogin()">Sign in</button>
+
+                                <!-- Using type button to override default submit behavior... -->
+                                <button type="button" class="btn btn-primary w-100" tabindex="4" onclick="ProcessLogin()">Sign in</button>
+
                             </form>
                             <p class="text-center mt-2"><span>New on our platform?</span><a href="/general/register"><span>&nbsp;Create an account</span></a></p>
                             <div class="divider my-2">
                                 <div class="divider-text">or</div>
                             </div>
+                            <!-- google login-->
+                            <a href= "/oauth2/authorization/google">google login</a>
                             <div class="auth-footer-btn d-flex justify-content-center"><a class="btn btn-facebook" href="#"><i data-feather="facebook"></i></a><a class="btn btn-twitter white" href="#"><i data-feather="twitter"></i></a><a class="btn btn-google" href="#"><i data-feather="mail"></i></a><a class="btn btn-github" href="#"><i data-feather="github"></i></a></div>
                         </div>
                     </div>
@@ -166,11 +171,38 @@
             return res;
         }
 
+        async function triggerRedirect() {
+            window.location = "/user/dashboard";
+        }
+
+        async function triggerLoginSuccess() {
+
+            setTimeout(triggerRedirect, 1000);
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Signed in successfully'
+            });
+
+        }
+
         async function triggerLoginError() {
 
             const { value: requestMessage } = await Swal.fire({
                 icon: 'error',
-                title: 'Invalid Credentials'
+                title: 'Invalid credentials'
             });
 
         }
@@ -180,7 +212,7 @@
             let username = UsernameInput.value;
             let password = PasswordInput.value;
 
-            console.log("Logging in right now!!!!", username, password);
+            console.log("Logging in right now", username, password);
 
             let loginResponse = false;
 
@@ -188,11 +220,13 @@
 
                 loginResponse = await SendLogin({
                     email: username,
-                    password: password
+                    pwd: password
                 });
 
                 if (loginResponse.data.code == 409) {
                     throw new Exception("Invalid credentials");
+                }else {
+                    triggerLoginSuccess();
                 }
 
             }catch(error) {

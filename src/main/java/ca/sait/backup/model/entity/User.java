@@ -4,25 +4,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import ca.sait.backup.Role;
 
+import lombok.Builder;
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-/* SQL To create the table.
-
-CREATE TABLE user (
-`id` int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-`name` varchar(128) DEFAULT NULL COMMENT 'name',
-`email` varchar(128) DEFAULT NULL COMMENT 'email',
-`pwd` varchar(124) DEFAULT NULL COMMENT 'password',
-`head_img` varchar(524) DEFAULT NULL COMMENT 'head image',
-`phone` varchar(64) DEFAULT '' COMMENT 'phone number',
-`create_time` datetime DEFAULT NULL COMMENT 'time created'
-);
-
- */
+@Data
 
 public class User {
 
@@ -47,6 +42,9 @@ public class User {
     @JsonProperty("create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
+    
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public String getEmail() {
         return email;
