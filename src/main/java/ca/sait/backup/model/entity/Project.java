@@ -1,6 +1,8 @@
 package ca.sait.backup.model.entity;
 
+import lombok.Data;
 
+@Data
 public class Project {
 
     // Storage
@@ -12,8 +14,7 @@ public class Project {
 
     private String description;
 
-
-    // Getters/Setters
+ // Getters/Setters
     public void setId(Integer id) {
         this.projectId = id;
     }
@@ -47,3 +48,5 @@ public class Project {
     }
 
 }
+
+

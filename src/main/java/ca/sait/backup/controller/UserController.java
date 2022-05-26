@@ -8,6 +8,7 @@ import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -85,5 +86,6 @@ public class UserController {
         return JsonData.buildSuccess(user);
 
     }
+    
 
 }

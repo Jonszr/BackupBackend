@@ -5,6 +5,7 @@ import ca.sait.backup.model.entity.User;
 import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.CommonUtils;
 import ca.sait.backup.utils.JWTUtils;
+import lombok.Builder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,6 +110,8 @@ public class UserServicelmpl implements UserService {
         User user = userMapper.findByUserId(userId);
         return user;
     }
+    
+
 
     /**
      * Parse the User object
@@ -130,7 +133,7 @@ public class UserServicelmpl implements UserService {
             validate(user);
             user.setPwd(CommonUtils.MD5(pwd));
 
-
+         
 
             return user;
         }else {
@@ -174,6 +177,9 @@ public class UserServicelmpl implements UserService {
             }
             throw new ConstraintViolationException(sb.toString(), violations);
         }
+        
+        
     }
 
+    
 }
