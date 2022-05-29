@@ -69,6 +69,7 @@ class FileExplorer {
 
     async OpenFolder(context) {
 
+        context = context.parentNode;
         console.log("Got context: " + context.id);
         let folderId = context.id.split('folder-')[1];
 
@@ -141,13 +142,17 @@ class FileExplorer {
             folderElem.classList.add('file-manager-item');
             folderElem.classList.add('folder');
             folderElem.id = `folder-${folder.id}`;
-            folderElem.onclick = _ => {
-                window.FileExplorerInst.OpenFolder(folderElem);
-            }
 
             let sampleFolderHTML = document.querySelector('#js-component-sample-folder').innerHTML;
             folderElem.innerHTML = sampleFolderHTML;
             folderElem.querySelector('#folderNameTemplate').textContent = folder.name;
+
+            // We only want to add the onclick event to the card body not the entire thing.
+            folderElem.querySelector('.card-body').onclick = _ => {
+                window.FileExplorerInst.OpenFolder(
+                    folderElem.querySelector('.card-body')
+                );
+            }
 
             // Append child to this category
             nFolderCategory.appendChild(folderElem);
