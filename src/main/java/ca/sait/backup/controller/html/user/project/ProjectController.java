@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ProjectController {
     public String GetProjectHome(@PathVariable("projectId") Integer projectId, Model model) {
 
         // Call asset service to get a full list of categories
-        List<Category> categoryList = this.assetService.getAllCategories();
+        List<Category> categoryList = this.assetService.getAllCategoriesForProject(projectId);
 
         // Initialize a CategoryAssociation UI Component
         ArrayList<CategoryAssociation> categoryAssociationList = new ArrayList<CategoryAssociation>();

@@ -20,6 +20,8 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/vendors.min.css">
     <link rel="stylesheet" type="text/css" href="/app-assets/fonts/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/extensions/jstree.min.css">
+    <link rel="stylesheet" type="text/css" href="/custom-assets/animations/animate.min.css">
+
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -647,6 +649,14 @@
                                     <div class="sidebar-toggle d-block d-xl-none float-start align-middle ms-1">
                                         <i data-feather="menu" class="font-medium-5"></i>
                                     </div>
+
+                                    <div id="goBackBtn" style="display: none; margin-left: 0.5em;">
+                                        <button type="button" class="btn btn-flat-success waves-effect" onclick="window.FileExplorerInst.GoBack(this)">
+                                            <i data-feather='arrow-left' class="font-medium-5"></i>
+                                            Back
+                                        </button>
+                                    </div>
+
                                     <div class="input-group input-group-merge shadow-none m-0 flex-grow-1">
                                             <span class="input-group-text border-0">
                                                 <i data-feather="search"></i>
@@ -714,13 +724,12 @@
                             </div>
                             <!-- search area ends here -->
 
-                            <div class="file-manager-content-body">
+                            <div id="file-manager" class="file-manager-content-body">
 
                                 <!-- Files Container Starts -->
 
                                 <!-- For every category association -->
-                                <div th:each="categoryAssociation : ${categoryAssociationList}" class="view-container" >
-
+                                <div th:each="categoryAssociation : ${categoryAssociationList}" class="view-container animate__animated animate__fadeInLeft" >
 
                                     <h6 th:text="${categoryAssociation.getCategory().getName()}" class="files-section-title mt-2 mb-75">Files</h6>
 
@@ -739,7 +748,7 @@
 
                                     <!-- For every folder in the category association -->
                                     <div th:each="folderAsset : ${categoryAssociation.getFolderList()}"
-                                         class="card file-manager-item folder">
+                                         class="card file-manager-item folder" th:id="'folder-' +${folderAsset.getId()}" onclick="window.FileExplorerInst.OpenFolder(this)">
 
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="customCheck1" />
@@ -755,7 +764,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="content-wrapper">
-                                                <p class="card-text file-name mb-0">Projects</p>
+                                                <p th:text="${folderAsset.getName()}" class="card-text file-name mb-0">Projects</p>
                                                 <p class="card-text file-size mb-0">2gb</p>
                                                 <p class="card-text file-date">01 may 2019</p>
                                             </div>
@@ -797,6 +806,79 @@
                                 <!-- /Files Container Ends -->
 
                             </div>
+
+                            <!-- Sample elements (hidden from dom) used for Javascript interaction (file-explorer.js) -->
+
+                            <div id="js-component-sample-category" style="display: none;" class="" >
+
+                                <h6 class="files-section-title mt-2 mb-75">Files</h6>
+
+                                <!-- Will display a notification of empty category if no files/folders are present -->
+                                <div id="noCategoriesNotificationTemplate"
+                                     style="display: none;"
+                                     class="card text-center shadow-none bg-transparent border-info col-12">
+
+                                    <div class="card-body">
+                                        <h4 class="card-title" style="margin-bottom: 0.5em;">Empty Category</h4>
+                                        <i data-feather='file-plus' style="width: 50px; height: 50px; margin-bottom: 1em;"></i>
+                                        <p class="card-text">This category is empty, add items to fill this up!</p>
+                                        <button type="button" class="btn btn-flat-success waves-effect">New Asset</button>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <div style="display: none;" id="js-component-sample-file" class="card file-manager-item file">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="customCheck9" />
+                                    <label class="form-check-label" for="customCheck9"></label>
+                                </div>
+                                <div class="card-img-top file-logo-wrapper">
+                                    <div class="dropdown float-end">
+                                        <i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-center w-100">
+                                        <img src="/app-assets/images/icons/txt.png" alt="file-icon" height="35" />
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="content-wrapper">
+                                        <p id="fileNameTemplate" class="card-text file-name mb-0">notes.txt</p>
+                                        <p class="card-text file-size mb-0">54kb</p>
+                                        <p class="card-text file-date">01 may 2019</p>
+                                    </div>
+                                    <small class="file-accessed text-muted">Last accessed: 43 minutes ago</small>
+                                </div>
+                            </div>
+
+                            <div style="display: none;" class="card file-manager-item folder" id="js-component-sample-folder" onclick="window.FileExplorerInst.OpenFolder(this)">
+
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="customCheck2" />
+                                    <label class="form-check-label" for="customCheck2"></label>
+                                </div>
+                                <div class="card-img-top file-logo-wrapper">
+                                    <div class="dropdown float-end">
+                                        <i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-center w-100">
+                                        <i data-feather="folder"></i>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="content-wrapper">
+                                        <p id="folderNameTemplate" class="card-text file-name mb-0">Projects</p>
+                                        <p class="card-text file-size mb-0">2gb</p>
+                                        <p class="card-text file-date">01 may 2019</p>
+                                    </div>
+                                    <small class="file-accessed text-muted">Last accessed: 21 hours ago</small>
+                                </div>
+
+                            </div>
+
+
                         </div>
                         <!-- file manager app content ends -->
 
@@ -1037,6 +1119,7 @@
 
 <!-- BEGIN: Page Vendor JS-->
 <script src="/app-assets/vendors/js/extensions/jstree.min.js"></script>
+<script src="/custom-scripts/axios.min.js"></script>
 <!-- END: Page Vendor JS-->
 
 <!-- BEGIN: Theme JS-->
@@ -1046,6 +1129,7 @@
 
 <!-- BEGIN: Page JS-->
 <script src="/app-assets/js/scripts/pages/app-file-manager.js"></script>
+<script src="/custom-scripts/fileExplorer.js"></script>
 <!-- END: Page JS-->
 
 <script>

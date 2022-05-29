@@ -7,8 +7,14 @@
         SELECT * FROM projectcategory;
     </select>
 
-    <!-- Return all folders belonging to a category -->
+    <select id="getAllCategoriesForProject" resultType="Category">
+        SELECT * FROM projectcategory
+        WHERE (
+            projectId =#{iProjectId}
+        );
+    </select>
 
+    <!-- Return all folders belonging to a category -->
     <select id="getAllFoldersForCategory" resultType="AssetFolder">
         SELECT * FROM projectfolder
         WHERE (
@@ -22,6 +28,29 @@
         WHERE (
             projectId =#{iProjectId} AND
             categoryId =#{iCategoryId}
+        );
+    </select>
+
+    <select id="getAllFoldersInsideFolder" resultType="AssetFolder">
+        SELECT * FROM projectfolder
+        WHERE (
+            projectId =#{iProjectId} AND
+            parentId =#{iCurrentFolderId}
+        );
+    </select>
+
+    <select id="getAllAssetsInsideFolder" resultType="Asset">
+        SELECT * FROM projectasset
+        WHERE (
+            projectId =#{iProjectId} AND
+            folderId =#{iCurrentFolderId}
+        );
+    </select>
+
+    <select id="getAssetFolderFromId" resultType="AssetFolder">
+        SELECT * FROM projectfolder
+        WHERE (
+            id =#{iAssetFolderId}
         );
     </select>
 

@@ -1,4 +1,4 @@
-package ca.sait.backup.model.business;
+package ca.sait.backup.model.entity.business;
 
 import ca.sait.backup.model.entity.Project;
 

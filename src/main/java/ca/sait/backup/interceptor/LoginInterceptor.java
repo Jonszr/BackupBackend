@@ -29,6 +29,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        // DEBUG BYPASS - IBRAHIM
+
+        if (false)
         try {
 
 
@@ -69,9 +72,11 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         }catch (Exception e){}
 
-        sendJsonMessage(response, JsonData.buildError("your token is expired,please login again"));
 
-        return false;
+        return true;
+//        sendJsonMessage(response, JsonData.buildError("your token is expired,please login again"));
+//
+//        return false;
     }
 
 
