@@ -59,7 +59,6 @@ public class UserServicelmpl implements UserService {
 
         User user =  findByUserId(Integer.parseInt(id));
 
-
         if (user != null){
             for(Map.Entry<String,String> userinfo : updatedUserInfo.entrySet()){
                 switch (userinfo.getKey()) {
