@@ -17,6 +17,9 @@ import java.util.List;
 
 public interface AssetService {
 
+    // Categories
+    int createCategory(Category category);
+
     List<Category> getAllCategories();
 
     List<Category> getAllCategoriesForProject(Integer projectId);
@@ -25,10 +28,21 @@ public interface AssetService {
 
     List<Asset> getAllAssetsForCategory(Category category);
 
+    // Folders
+
+    void createFolder(AssetFolder folder);
+
     List<AssetFolder> getAllFoldersInsideFolder(AssetFolder assetFolder);
 
     List<Asset> getAllAssetsInsideFolder(AssetFolder assetFolder);
 
     AssetFolder getAssetFolderFromId(Integer assetFolderId);
+
+    // Assets
+    void createAsset(Asset asset);
+
+    void updateAsset(Asset asset, Integer categoryId);
+
+    void deleteAsset(Asset asset);
 
 }

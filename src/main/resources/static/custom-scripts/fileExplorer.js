@@ -3,8 +3,14 @@
 class FileExplorer {
 
     pageStorage = []; // Stores contents of each page as navigation continues
+    folderIndex = []; // Stores the ID of which folder we are in
+
+    currentCategoryId = -1; // Root level
     pageIndex = 0; // Root level
     animationDelayMs = 250;
+
+    assetStorage = []; // Stores all assets in JSON format.
+    folderStorage = []; // Stores all folders in JSON format.
 
     async GetCurrentProjectId() {
         let projectId = window.document.URL.split('/user/project/')[1].split('/')[0];
@@ -21,15 +27,180 @@ class FileExplorer {
         return res;
     }
 
-    async SaveCurrentStructure() {
+    async CreateNewAssetAPI(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/assets/${projectId}`, jsn);
+    }
+
+    async CreateNewCategoryAPI(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/categories/${projectId}`, jsn);
+    }
+
+    async CreateNewFolderAPI(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/folders/${projectId}`, jsn);
+    }
+
+    // Asset
+    async CreateAsset(asset) {
+
+        asset = document.querySelector('#open-asset-modal');
+
+        this.BlockElement('#open-asset-modal .modal-content');
+        let url = asset.querySelector('#urlInput').value;
+        let name = asset.querySelector('#assetNameInput').value;
+        let categorySelection = asset.querySelector('#categorySelectInputAsset').value;
+        let username = asset.querySelector('#assetUsernameInput').value;
+        let password = asset.querySelector('#assetPasswordInput').value;
+        let notes = asset.querySelector('#assetNotesInput').value;
+        let projectId = await this.GetCurrentProjectId();
+        let folderId = -1;
+
+        if (this.pageIndex > 0) {
+            folderId = parseInt(this.folderIndex[this.pageIndex - 1]);
+        }
+
+        let jsn = {
+            name, categorySelection,
+            type: 'credential',
+            folderId: folderId,
+            categoryId: this.currentCategoryId,
+            value: JSON.stringify({
+                username, password, notes, url
+            })
+        };
+
+        await this.CreateNewAssetAPI(jsn);
+        this.UnblockElement('#open-asset-modal .modal-content');
+
+        return 0;
+    }
+
+
+    async SaveAsset(asset) {
+        return 0;
+    }
+
+    async DeleteAsset(asset) {
+        return 0;
+    }
+
+    async ConfigureAssetCategoryOptions() {
+
+        let modalDrpDownList = [
+            'categorySelectInputAsset',
+            'categorySelectInputFolder'
+        ];
+
+        for (let drpDownSelector of modalDrpDownList) {
+
+            let modalSelectDrpDwn = document.querySelector(`#${drpDownSelector}`);
+            for(let child of modalSelectDrpDwn.children) {
+                modalSelectDrpDwn.removeChild(child);
+            }
+
+            let categories = document.querySelectorAll('.view-container');
+            for(let category of categories) {
+                let cName = category.querySelector('h6').textContent;
+
+                let option = document.createElement('option');
+                option.text = cName;
+
+                modalSelectDrpDwn.appendChild(option);
+            }
+
+        }
+
+    }
+
+    // Category
+    async CreateCategory(category) {
+
+        this.BlockElement('#new-category-modal .modal-content');
+        category = document.querySelector('#new-category-modal');
+        let name = category.querySelector('#categoryInputText').value;
+        let description = category.querySelector('#categoryDescriptionText').value;
+        let projectId = await this.GetCurrentProjectId();
+
+        let jsn = {
+            name, description
+        };
+
+        console.log(jsn);
+
+        await this.CreateNewCategoryAPI(jsn);
+        this.UnblockElement('#new-category-modal .modal-content');
+
+        return 0;
+    }
+
+    async DeleteCategory(category) {
+        return 0;
+    }
+
+    // Folder
+    async CreateFolder(folder) {
+
+        this.BlockElement('#new-folder-modal .modal-content');
+        folder = document.querySelector('#new-folder-modal');
+
+        let name = folder.querySelector('#folderNameFolder').value;
+        let categorySelection = folder.querySelector('#categorySelectInputFolder').value;
+        let projectId = await this.GetCurrentProjectId();
+        let folderId = -1;
+
+        if (this.pageIndex > 0) {
+            folderId = parseInt(this.folderIndex[this.pageIndex - 1]);
+        }
+
+        let categoryId = this.currentCategoryId;
+
+        let jsn = {
+            folderName: name, categorySelection, folderId, categoryId
+        };
+
+        await this.CreateNewFolderAPI(jsn);
+        this.UnblockElement('#new-folder-modal .modal-content');
+
+        return 0;
+    }
+
+    async DeleteFolder(folder) {
+        return 0;
+    }
+
+    async BlockElement(selector, timeout = 5000) {
+        $(`${selector}`).block({
+            message: '<div class="spinner-grow spinner-grow-sm text-white" role="status"></div>',
+            timeout: timeout,
+            css: {
+              backgroundColor: 'transparent',
+              border: '0'
+            },
+            overlayCSS: {
+              opacity: 0.5
+            }
+        });
+        return true;
+    }
+
+    async UnblockElement(selector) {
+        $(`${selector}`).unblock();
+        return true;
+    }
+
+    async SaveCurrentStructure(folderId) {
 
         let fileManagerContainer = document.querySelector('#file-manager');
         let fileContainerElems = fileManagerContainer.querySelectorAll('.view-container');
 
         if (this.pageStorage.length <= this.pageIndex) {
             this.pageStorage.push(fileContainerElems);
+            this.folderIndex.push(folderId);
         }else {
             this.pageStorage[this.pageIndex] = fileContainerElems;
+            this.folderIndex[this.pageIndex] = folderId;
         }
 
     }
@@ -73,27 +244,24 @@ class FileExplorer {
         console.log("Got context: " + context.id);
         let folderId = context.id.split('folder-')[1];
 
-        await this.SaveCurrentStructure();
+        if (this.pageIndex == 0) {
+            this.currentCategoryId = parseInt(
+                context.parentNode.id.split('category-')[1]
+            );
+        }
+
+        await this.SaveCurrentStructure(folderId);
         let folderContentsFolders = this.LoadNextFolder(folderId);
         let filesContentsFolders = this.LoadNextFiles(folderId);
 
         console.log("Trying to block", `#${context.id}`);
-        $(`#${context.id}`).block({
-            message: '<div class="spinner-grow spinner-grow-sm text-white" role="status"></div>',
-            timeout: 5000,
-            css: {
-              backgroundColor: 'transparent',
-              border: '0'
-            },
-            overlayCSS: {
-              opacity: 0.5
-            }
-        });
+
+        this.BlockElement(`#${context.id}`);
 
         folderContentsFolders = await folderContentsFolders;
         filesContentsFolders = await filesContentsFolders;
 
-        $(`#${context.id}`).unblock();
+        this.UnblockElement(`#${context.id}`);
 
         console.log(folderContentsFolders);
         let items = JSON.parse(folderContentsFolders.data.msg);
@@ -204,6 +372,10 @@ class FileExplorer {
 
         // Check if we are at the root page (then hide the back button button)
         if (this.pageIndex == 0) {
+
+            // Set category id to root
+            this.currentCategoryId = -1;
+
             // Make go back button visible
             let goBackBtn = document.querySelector('#goBackBtn');
             goBackBtn.classList.remove('animate__animated');
@@ -247,3 +419,5 @@ let fileExplorerInst = new FileExplorer();
 console.log(fileExplorerInst.OpenFolder);
 
 window.FileExplorerInst = fileExplorerInst;
+
+fileExplorerInst.ConfigureAssetCategoryOptions();

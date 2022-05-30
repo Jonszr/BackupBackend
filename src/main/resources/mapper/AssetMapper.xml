@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="ca.sait.backup.mapper.AssetMapper">
 
+    <insert id="createCategory" parameterType="Category">
+        INSERT INTO projectcategory (projectId, name, description)
+        VALUES (#{projectId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR});
+    </insert>
+
     <!-- Generic query to return all projects in the database -->
     <select id="getAllCategories" resultType="Category">
         SELECT * FROM projectcategory;
@@ -19,15 +24,28 @@
         SELECT * FROM projectfolder
         WHERE (
             projectId =#{iProjectId} AND
-            categoryId =#{iCategoryId}
+            categoryId =#{iCategoryId} AND
+            parentId IS NULL
         );
     </select>
+
+    <insert id="createFolder" parameterType="AssetFolder">
+        INSERT INTO projectfolder (projectId, categoryId, parentId, name)
+        VALUES (#{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER},
+        #{name,jdbcType=VARCHAR});
+    </insert>
+
+    <insert id="createRootFolder" parameterType="AssetFolder">
+        INSERT INTO projectfolder (projectId, categoryId, name)
+        VALUES (#{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR});
+    </insert>
 
     <select id="getAllAssetsForCategory" resultType="Asset">
         SELECT * FROM projectasset
         WHERE (
             projectId =#{iProjectId} AND
-            categoryId =#{iCategoryId}
+            categoryId =#{iCategoryId} AND
+            folderId IS NULL
         );
     </select>
 
@@ -53,5 +71,17 @@
             id =#{iAssetFolderId}
         );
     </select>
+
+    <insert id="createAsset" parameterType="Asset">
+        INSERT INTO projectasset (projectId, folderId, categoryId, assetName, assetType, assetValue)
+        VALUES (#{projectId,jdbcType=INTEGER}, #{folderId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER},
+        #{assetName,jdbcType=VARCHAR},#{assetType,jdbcType=VARCHAR},#{assetValue,jdbcType = VARCHAR});
+    </insert>
+
+    <insert id="createRootAsset" parameterType="Asset">
+        INSERT INTO projectasset (projectId, categoryId, assetName, assetType, assetValue)
+        VALUES (#{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER},
+        #{assetName,jdbcType=VARCHAR},#{assetType,jdbcType=VARCHAR},#{assetValue,jdbcType = VARCHAR});
+    </insert>
 
 </mapper>

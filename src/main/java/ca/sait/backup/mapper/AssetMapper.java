@@ -8,6 +8,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface AssetMapper {
+
+    int createCategory(Category category);
+
     List<Category> getAllCategories();
 
     List<Category> getAllCategoriesForProject(
@@ -24,6 +27,9 @@ public interface AssetMapper {
         @Param("iProjectId") Integer iProjectId
     );
 
+    int createFolder(AssetFolder assetFolder);
+    int createRootFolder(AssetFolder assetFolder);
+
     List<AssetFolder> getAllFoldersInsideFolder(
         @Param("iCurrentFolderId") Integer iFolderId,
         @Param("iProjectId") Integer iProjectId
@@ -37,5 +43,9 @@ public interface AssetMapper {
     AssetFolder getAssetFolderFromId(
         @Param("iAssetFolderId") Integer iAssetFolderId
     );
+
+    int createAsset(Asset asset);
+
+    int createRootAsset(Asset asset);
 
 }

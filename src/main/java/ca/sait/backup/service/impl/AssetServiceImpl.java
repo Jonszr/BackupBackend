@@ -20,6 +20,10 @@ public class AssetServiceImpl implements AssetService {
     @Autowired
     private AssetMapper assetMapper;
 
+    public int createCategory(Category category) {
+        return this.assetMapper.createCategory(category);
+    }
+
     public List<Category> getAllCategories() {
         List<Category> categoryList = this.assetMapper.getAllCategories();
         return categoryList;
@@ -48,6 +52,16 @@ public class AssetServiceImpl implements AssetService {
         return assetList;
     }
 
+    public void createFolder(AssetFolder assetFolder) {
+
+        if (assetFolder.getParentId() == -1) {
+            this.assetMapper.createRootFolder(assetFolder);
+        }else {
+            this.assetMapper.createFolder(assetFolder);
+        }
+
+    }
+
     public List<AssetFolder> getAllFoldersInsideFolder(AssetFolder assetFolder) {
         List<AssetFolder> assetFolderList = this.assetMapper.getAllFoldersInsideFolder(
             assetFolder.getId(),
@@ -67,6 +81,24 @@ public class AssetServiceImpl implements AssetService {
     public AssetFolder getAssetFolderFromId(Integer id) {
         AssetFolder assetFolder = this.assetMapper.getAssetFolderFromId(id);
         return assetFolder;
+    }
+
+    public void createAsset(Asset asset) {
+
+        if (asset.getFolderId() == -1) {
+            this.assetMapper.createRootAsset(asset);
+        }else {
+            this.assetMapper.createAsset(asset);
+        }
+
+    }
+
+    public void updateAsset(Asset asset, Integer categoryId) {
+
+    }
+
+    public void deleteAsset(Asset asset) {
+
     }
 
 }
