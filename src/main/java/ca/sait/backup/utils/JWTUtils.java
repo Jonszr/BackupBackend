@@ -1,6 +1,6 @@
 package ca.sait.backup.utils;
 
-import ca.sait.backup.model.entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -53,18 +53,20 @@ public class JWTUtils {
      * @param user
      * @return
      */
-    public static String geneJsonWebToken(User user){
+    public static String geneJsonWebToken(){
 
-        String token = Jwts.builder().setSubject(SUBJECT)
-                .claim("head_img",user.getHeadImg())
-                .claim("id",user.getId())
-                .claim("name",user.getName())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
-                .signWith(SignatureAlgorithm.HS256,SECRET).compact();
+//        String token = Jwts.builder().setSubject(SUBJECT)
+//                .claim("head_img",user.getHeadImg())
+//                .claim("id",user.getId())
+//                .claim("name",user.getName())
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
+//                .signWith(SignatureAlgorithm.HS256,SECRET).compact();
 
-        token = TOKEN_PREFIX + token;
+//        token = TOKEN_PREFIX + token;
 
+
+        String token = "dummy";
 
         return token;
     }

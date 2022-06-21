@@ -1,16 +1,12 @@
 package ca.sait.backup.model.request;
 
+
 import lombok.Data;
 
-/**
- * Login request
- */
-
 @Data
-public class LoginRequest {
-
+public class RegisterRequest {
     private String email;
-
+    private String name;
     private String password;
-
+    private String phone;
 }
