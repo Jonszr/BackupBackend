@@ -21,13 +21,6 @@ class DashboardController {
     @GetMapping("/dashboard")
     public String GetDashboard() {
 
-        System.out.println("Saving new user");
-
-        //this.uService.findByFirstName("Ibrahim");
-
-        this.userService.validateUser("ibrahim@sait.ca", "password");
-
-        System.out.println("New user saved");
 
         return ("/user/dashboard");
 

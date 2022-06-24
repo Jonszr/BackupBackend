@@ -1,14 +1,38 @@
 package ca.sait.backup.model.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
+import lombok.*;
 
+import javax.persistence.*;
+import java.util.List;
+
+
+@Builder
+@Data
+@Table(name = "assetfolder")
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class AssetFolder {
 
-    @Getter private int id;
-    @Getter @Setter private int projectId;
-    @Getter @Setter private int categoryId;
-    @Getter @Setter int parentId;
-    @Getter @Setter private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Asset> childAssets;
+
+    @ManyToOne()
+    @JoinColumn(name = "assetfolder_id")
+    private AssetFolder parent;
+
+    @Expose
+    private String name;
 
 }

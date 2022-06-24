@@ -37,7 +37,12 @@ public class UserController {
         System.out.println("Email: " + loginRequest.getEmail());
         System.out.println("Password: " + loginRequest.getPassword());
 
-        lResponse.setAuthenticated(true);
+        boolean valid = this.userService.validateUser(
+            loginRequest.getEmail(),
+            loginRequest.getPassword()
+        );
+
+        lResponse.setAuthenticated(valid);
         return lResponse;
     }
 

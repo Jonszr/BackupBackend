@@ -2,9 +2,13 @@ package ca.sait.backup.controller.html.user.project;
 
 
 import ca.sait.backup.component.user.CategoryAssociation;
+import ca.sait.backup.model.entity.Asset;
+import ca.sait.backup.model.entity.AssetFolder;
 import ca.sait.backup.model.entity.Category;
+import ca.sait.backup.model.entity.Project;
 import ca.sait.backup.service.AssetService;
 
+import ca.sait.backup.service.ProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,11 +29,18 @@ public class ProjectController {
     @Autowired
     private AssetService assetService;
 
-    @GetMapping("/")
-    public String GetProjectHome(@PathVariable("projectId") Integer projectId, Model model) {
+    @Autowired
+    private ProjectService projectService;
 
-        // Call asset service to get a full list of categories
-        List<Category> categoryList = this.assetService.getAllCategoriesForProject(projectId);
+    @GetMapping("/")
+    public String GetProjectHome(@PathVariable("projectId") Long projectId, Model model) {
+
+        // Get project using provided id
+
+        Project project = this.projectService.getProjectUsingId(projectId);
+
+        // Using ORM, just grab the categories
+        List<Category> categoryList = project.getCategories();
 
         // Initialize a CategoryAssociation UI Component
         ArrayList<CategoryAssociation> categoryAssociationList = new ArrayList<CategoryAssociation>();
@@ -39,16 +50,33 @@ public class ProjectController {
             CategoryAssociation categoryAssociation = new CategoryAssociation();
             categoryAssociation.setCategory(cat);
 
+            List<Asset> filteredAssets = cat.getAssets();
+            List<AssetFolder> filteredFolder = cat.getAssetFolders();
+
+            for (int i = 0; i < filteredAssets.size(); i++) {
+                if (filteredAssets.get(i).getParent() != null) {
+                    filteredAssets.remove(i);
+                }
+            }
+
+            for (int i = 0; i < filteredFolder.size(); i++) {
+                if (filteredFolder.get(i).getParent() != null) {
+                    filteredFolder.remove(i);
+                }
+            }
+
             categoryAssociation.setAssetList(
-                this.assetService.getAllAssetsForCategory(cat)
+                filteredAssets
             );
+
             categoryAssociation.setFolderList(
-                this.assetService.getAllFoldersForCategory(cat)
+                filteredFolder
             );
 
             categoryAssociationList.add(
                 categoryAssociation
             );
+
         }
 
         // Feed the rendering agent the data through the UI component.

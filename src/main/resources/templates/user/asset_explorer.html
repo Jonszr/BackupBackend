@@ -713,7 +713,7 @@
                                 <!-- Files Container Starts -->
 
                                 <!-- For every category association -->
-                                <div th:each="categoryAssociation : ${categoryAssociationList}" th:id="'category-' +${categoryAssociation.getCategory().getCategoryId()}" class="view-container animate__animated animate__fadeInLeft" >
+                                <div th:each="categoryAssociation : ${categoryAssociationList}" th:id="'category-' +${categoryAssociation.getCategory().getId()}" class="view-container animate__animated animate__fadeInLeft" >
 
                                     <h6 th:text="${categoryAssociation.getCategory().getName()}" class="files-section-title mt-2 mb-75">Files</h6>
 

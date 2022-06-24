@@ -281,7 +281,7 @@ class FileExplorer {
         nFolderCategory.querySelector('h6').textContent = "Folders";
 
         // Check to see if no folders are present
-        if (!items.length) {
+        if (!items || !items.length) {
             let noContentElem = nFolderCategory.querySelector('#noCategoriesNotificationTemplate');
             noContentElem.id = 'no-content-folders';
             noContentElem.style.display = '';
@@ -296,7 +296,7 @@ class FileExplorer {
         nFileCategory.querySelector('h6').textContent = "Files";
 
         // Check to see if no folders are present
-        if (!files.length) {
+        if (!files || !files.length) {
             let noContentElem = nFileCategory.querySelector('#noCategoriesNotificationTemplate');
             noContentElem.id = 'no-content-files';
             noContentElem.style.display = '';
