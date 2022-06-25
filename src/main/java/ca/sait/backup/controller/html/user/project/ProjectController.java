@@ -85,4 +85,9 @@ public class ProjectController {
         return "/user/asset_explorer.html";
     }
 
+    @GetMapping("/requests")
+    public String ProjectAssetRequests() {
+        return "/user/project_request.html";
+    }
+
 }
