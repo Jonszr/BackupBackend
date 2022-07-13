@@ -81,8 +81,6 @@ public class ProjectControllerRest {
 
         List<Category> categoryList = project.getCategories();
 
-
-
         Asset asset = new Asset();
 
         // If no category id is provided (meaning no category is selected).

@@ -8,31 +8,27 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Builder
 @Data
-@Table(name = "project")
+@Table(name = "support_ticket_chat")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public class SupportTicketChat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Category> categories;
+    @ManyToOne
+    @JoinColumn(name = "support_ticket_id")
+    private SupportTicket ticket;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User from;
 
     @Temporal(TemporalType.DATE)
     private Date creationDate;
-
-    // Project information
-    private String name;
-    private String bannerLocation;
-    private String description;
+    private String message;
 }

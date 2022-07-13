@@ -20,11 +20,6 @@ public class SettingsController {
         return "/user/settings_security.html";
     }
 
-    @GetMapping("/locality")
-    public String GetSettingsLanguage() {
-        return "/user/settings_language.html";
-    }
-
     @GetMapping("/delete")
     public String GetSettingsDelete() {
         return "/user/settings_delete.html";
