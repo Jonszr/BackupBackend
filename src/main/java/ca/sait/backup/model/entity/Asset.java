@@ -1,15 +1,32 @@
 package ca.sait.backup.model.entity;
 
-import lombok.Getter;
+import lombok.*;
 
+import javax.mail.Folder;
+import javax.persistence.*;
+
+@Builder
+@Data
+@Table(name = "asset")
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Asset {
 
-    @Getter private int assetId;
-    @Getter private int projectId;
-    @Getter private int folderId;
-    @Getter private int categoryId;
-    @Getter private String assetName;
-    @Getter private String assetType;
-    @Getter private String assetValue;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "assetfolder_id")
+    private AssetFolder parent;
+
+    private String assetName;
+    private String assetType;
+    private String assetValue;
 
 }

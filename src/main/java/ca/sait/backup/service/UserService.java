@@ -1,21 +1,16 @@
 package ca.sait.backup.service;
 
 import ca.sait.backup.model.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 
-public interface UserService {
 
-    /**
-     * new user
-     * @param userInfo
-     * @return
-     */
-    int create(Map<String, String> userInfo);
+public interface UserService{
 
-    int update(Map<String,String> updatedUserInfo);
+    boolean validateUser(String email, String password);
 
-    String findByEmailAndPwd(String email, String pwd);
+    boolean processRegister(String email, String password, String name, String phone);
 
-    User findByUserId(Integer userId);
 }

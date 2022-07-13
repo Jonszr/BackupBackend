@@ -17,18 +17,34 @@ import java.util.List;
 
 public interface AssetService {
 
+    // Categories
+    int createCategory(Category category);
+
     List<Category> getAllCategories();
 
-    List<Category> getAllCategoriesForProject(Integer projectId);
+    List<Category> getAllCategoriesForProject(Long projectId) throws Exception;
 
     List<AssetFolder> getAllFoldersForCategory(Category category);
 
     List<Asset> getAllAssetsForCategory(Category category);
 
+    Category getCategoryById(Long categoryId) throws Exception;
+
+    // Folders
+
+    void createFolder(AssetFolder folder);
+
     List<AssetFolder> getAllFoldersInsideFolder(AssetFolder assetFolder);
 
     List<Asset> getAllAssetsInsideFolder(AssetFolder assetFolder);
 
-    AssetFolder getAssetFolderFromId(Integer assetFolderId);
+    AssetFolder getAssetFolderFromId(Long assetFolderId) throws Exception;
+
+    // Assets
+    void createAsset(Asset asset);
+
+    void updateAsset(Asset asset, Integer categoryId);
+
+    void deleteAsset(Asset asset);
 
 }

@@ -1,9 +1,13 @@
 package ca.sait.backup.controller;
 
 import ca.sait.backup.exception.CustomExceptionHandler;
-import ca.sait.backup.model.entity.User;
+
 import ca.sait.backup.model.request.LoginRequest;
+import ca.sait.backup.model.request.RegisterRequest;
+import ca.sait.backup.model.response.LoginResponse;
+import ca.sait.backup.model.response.RegisterResponse;
 import ca.sait.backup.service.EmailService;
+
 import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,69 +25,44 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private EmailService emailService;
 
-    /**
-     * register interface
-     * @param userInfo
-     * @return
-     */
-    @PostMapping("register")
-    public JsonData register(@RequestBody Map<String,String> userInfo ) throws MessagingException {
+    @Autowired UserService userService;
 
-        int rows = userService.create(userInfo);
-        emailService.sendHtmlMessage(userInfo.get("email"),"Thank you! Register successfully!","Welcome!");
 
-        return rows == 1 ? JsonData.buildSuccess("Register successfully!"): JsonData.buildError("register failed, please try again");
+    @PostMapping("/login")
+    private LoginResponse processLogin(@RequestBody LoginRequest loginRequest) {
+        LoginResponse lResponse = new LoginResponse();
 
-    }
-    @PostMapping("update")
-    public JsonData update(@RequestBody Map<String,String> updatedUserInfo) throws MessagingException {
-        int rows = userService.update(updatedUserInfo);
-        emailService.sendHtmlMessage(updatedUserInfo.get("email"),"Your information updated successfully!","Thank you!");
-        return rows == 1 ? JsonData.buildSuccess("update successfully!"): JsonData.buildError("update failed, please try again");
+        System.out.println("Email: " + loginRequest.getEmail());
+        System.out.println("Password: " + loginRequest.getPassword());
+
+        boolean valid = this.userService.validateUser(
+            loginRequest.getEmail(),
+            loginRequest.getPassword()
+        );
+
+        lResponse.setAuthenticated(valid);
+        return lResponse;
     }
 
+    @PostMapping("/register")
+    private RegisterResponse processRegister(@RequestBody RegisterRequest registerRequest) {
+        RegisterResponse rResponse = new RegisterResponse();
 
-    /**
-     * login interface
-     * @param loginRequest
-     * @return
-     */
-    @PostMapping("login")
-    public JsonData login(@RequestBody LoginRequest loginRequest){
+        boolean created = this.userService.processRegister(
+            registerRequest.getEmail(),
+            registerRequest.getPassword(),
+            registerRequest.getName(),
+            registerRequest.getPhone()
+        );
 
-        String token = userService.findByEmailAndPwd(loginRequest.getEmail(), loginRequest.getPwd());
+        rResponse.setCreationStatus(created);
 
-        if (token == null) {
-            return JsonData.buildError(409, "Unauthorized");
-        }
+        // TODO: Send authenticated JWT token.
 
-        return JsonData.buildSuccess(token);
-
+        return rResponse;
     }
 
-
-    /**
-     * find user information by id throng token
-     * @param request
-     * @return
-     */
-    @GetMapping("find_by_token")
-    public JsonData findUserInfoByToken(HttpServletRequest request){
-
-        Integer userId = (Integer) request.getAttribute("user_id");
-
-        if(userId == null){
-            return JsonData.buildError("Query failed");
-        }
-
-        User user =  userService.findByUserId(userId);
-
-        return JsonData.buildSuccess(user);
-
-    }
 
 }

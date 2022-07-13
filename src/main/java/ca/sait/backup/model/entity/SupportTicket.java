@@ -5,34 +5,32 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Builder
 @Data
-@Table(name = "project")
+@Table(name = "support_ticket")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public class SupportTicket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Category> categories;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User complainant;
 
-    @Temporal(TemporalType.DATE)
-    private Date creationDate;
+    @OneToMany(mappedBy = "SupportTicketChat", cascade = CascadeType.ALL)
+    private List<SupportTicketChat> chat;
 
-    // Project information
-    private String name;
-    private String bannerLocation;
+    // General Information
+    private String title;
     private String description;
+
 }

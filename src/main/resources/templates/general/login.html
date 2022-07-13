@@ -218,10 +218,10 @@
 
                 loginResponse = await SendLogin({
                     email: username,
-                    pwd: password
+                    password: password
                 });
 
-                if (loginResponse.data.code == 409) {
+                if (!loginResponse.data.authenticated) {
                     throw new Exception("Invalid credentials");
                 }else {
                     triggerLoginSuccess();

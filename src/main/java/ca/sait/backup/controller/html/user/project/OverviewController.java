@@ -1,6 +1,6 @@
 package ca.sait.backup.controller.html.user.project;
 
-import ca.sait.backup.model.entity.business.RowContainer;
+import ca.sait.backup.model.business.RowContainer;
 import ca.sait.backup.model.entity.Project;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

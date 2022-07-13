@@ -69,7 +69,7 @@
 
         <ul class="nav navbar-nav align-items-center ms-auto">
             <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">Ivan Lavena</span><span class="user-status">Admin</span></div><span class="avatar"><img class="round" src="/app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
+                <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">Ibrahim Element</span><span class="user-status">Admin</span></div><span class="avatar"><img class="round" src="/app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
             </a>
                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a class="dropdown-item" href="page-profile.html"><i class="me-50" data-feather="user"></i> Profile</a><a class="dropdown-item" href="app-email.html"><i class="me-50" data-feather="mail"></i> Inbox</a><a class="dropdown-item" href="app-todo.html"><i class="me-50" data-feather="check-square"></i> Task</a><a class="dropdown-item" href="app-chat.html"><i class="me-50" data-feather="message-square"></i> Chats</a>
                     <div class="dropdown-divider"></div><a class="dropdown-item" href="page-account-settings-account.html"><i class="me-50" data-feather="settings"></i> Settings</a><a class="dropdown-item" href="page-pricing.html"><i class="me-50" data-feather="credit-card"></i> Pricing</a><a class="dropdown-item" href="page-faq.html"><i class="me-50" data-feather="help-circle"></i> FAQ</a><a class="dropdown-item" href="auth-login-cover.html"><i class="me-50" data-feather="power"></i> Logout</a>
@@ -713,7 +713,7 @@
                                 <!-- Files Container Starts -->
 
                                 <!-- For every category association -->
-                                <div th:each="categoryAssociation : ${categoryAssociationList}" class="view-container animate__animated animate__fadeInLeft" >
+                                <div th:each="categoryAssociation : ${categoryAssociationList}" th:id="'category-' +${categoryAssociation.getCategory().getId()}" class="view-container animate__animated animate__fadeInLeft" >
 
                                     <h6 th:text="${categoryAssociation.getCategory().getName()}" class="files-section-title mt-2 mb-75">Files</h6>
 
@@ -861,7 +861,6 @@
                                 </div>
 
                             </div>
-
 
                         </div>
                         <!-- file manager app content ends -->
@@ -1053,10 +1052,18 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <input type="text" class="form-control" value="New folder" placeholder="Untitled folder" />
+
+                                        <label class="form-label" for="folderNameFolder">Name:</label>
+                                        <input type="text" id="folderNameFolder" class="form-control" value="New folder" placeholder="Untitled folder" />
+
+                                        <label class="form-label" for="categorySelectInputFolder" style="margin-top: 0.5em;">Category:</label>
+                                        <select id="categorySelectInputFolder" class="form-control form-select" type="select" placeholder="NDA Document">
+                                            <!-- Options are populated through page script (fileExplorer.js) -->
+                                        </select>
+
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary me-1" data-bs-dismiss="modal">Create</button>
+                                        <button type="button" onclick="window.FileExplorerInst.CreateFolder(this)" class="btn btn-primary me-1" data-bs-dismiss="modal">Create</button>
                                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                                     </div>
                                 </div>
@@ -1073,10 +1080,16 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <input type="text" class="form-control" value="New category" placeholder="Untitled category" />
+
+                                        <label class="form-label" for="categoryInputText">Name:</label>
+                                        <input id="categoryInputText" type="text" class="form-control" value="New category" placeholder="Untitled category" />
+
+                                        <label class="form-label" for="categoryInputText">Description:</label>
+                                        <input id="categoryDescriptionText" type="text" class="form-control" placeholder="Description of category" />
+
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary me-1" data-bs-dismiss="modal">Create</button>
+                                        <button type="button" onclick="window.FileExplorerInst.CreateCategory(this)" class="btn btn-primary me-1" data-bs-dismiss="modal">Create</button>
                                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                                     </div>
                                 </div>
@@ -1117,8 +1130,10 @@
                                             </div>
 
                                             <div class="col-12 col-md-6">
-                                                <label class="form-label" for="folderSelectInput">Folder:</label>
-                                                <input id="folderSelectInput" class="form-control" type="text" placeholder="NDA Document"/>
+                                                <label class="form-label" for="categorySelectInputAsset">Category:</label>
+                                                <select id="categorySelectInputAsset" class="form-control form-select" type="select" placeholder="NDA Document">
+                                                    <!-- Options are populated through page script (fileExplorer.js) -->
+                                                </select>
                                             </div>
 
                                             <div class="col-12 col-md-6">
@@ -1133,12 +1148,13 @@
 
                                             <div class="col-12 col-md-12">
                                                 <label class="form-label" for="assetNotesInput">Notes:</label>
-                                                <input id="assetNotesInput" class="form-control" type="text" placeholder="NDA Document"/>
+                                                <textarea id="assetNotesInput" rows="3" class="form-control" type="text" placeholder="NDA Document">
+
+                                                </textarea>
                                             </div>
 
-
                                             <div class="col-12 col-md-12">
-                                                <button type="submit" class="btn btn-primary me-1 waves-effect waves-float waves-light">Submit</button>
+                                                <button type="reset" onclick="window.FileExplorerInst.CreateAsset(this)" class="btn btn-primary me-1 waves-effect waves-float waves-light">Submit</button>
                                                 <button type="reset" class="btn btn-outline-secondary waves-effect" data-bs-dismiss="modal" aria-label="Close">Discard</button>
                                             </div>
 
