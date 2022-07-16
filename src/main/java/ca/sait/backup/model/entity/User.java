@@ -2,6 +2,7 @@ package ca.sait.backup.model.entity;
 
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Project> projects;
@@ -27,7 +28,7 @@ public class User {
     private String email;
     private String phone;
 
-    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
     private Date creationDate;
 
 }

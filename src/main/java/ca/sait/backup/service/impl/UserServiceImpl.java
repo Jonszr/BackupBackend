@@ -6,10 +6,13 @@ import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
+@Validated
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -39,6 +42,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User dev_GetUserById(Long id) {
+
+        Optional<User> user = this.uRepository.findById(
+            id
+        );
+
+        return user.get();
+    }
+
+    @Override
     public boolean processRegister(String email, String password, String name, String phone) {
 
         // Check if email is already used
@@ -60,6 +73,6 @@ public class UserServiceImpl implements UserService {
         this.uRepository.save(user);
 
         return true;
-
     }
+
 }

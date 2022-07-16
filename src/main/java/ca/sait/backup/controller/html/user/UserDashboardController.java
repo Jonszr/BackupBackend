@@ -8,12 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import ca.sait.backup.model.entity.User;
-
 @Slf4j
 @Controller
 @RequestMapping("/user")
-class DashboardController {
+class UserDashboardController {
 
     @Autowired
     private UserService userService;

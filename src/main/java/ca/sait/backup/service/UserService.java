@@ -13,4 +13,6 @@ public interface UserService{
 
     boolean processRegister(String email, String password, String name, String phone);
 
+    User dev_GetUserById(Long id);
+
 }
