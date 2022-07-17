@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        class="loading" lang="en" data-textdirection="ltr">
 <!-- BEGIN: Head-->
 
 <head>
@@ -189,10 +192,9 @@
         <div class="shadow-bottom"></div>
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-                <li class=" nav-item"><a class="d-flex align-items-center" href="mediator-index.html"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Home</span></a></li>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="/mediator/dashboard/"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Home</span></a></li>
                   
-                <li class=" nav-item"><a class="d-flex align-items-center" href="ticket.html"><i data-feather="square"></i><span class="menu-title text-truncate" data-i18n="Modal Examples">Tickets</span></a></li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="Chat.html"><i data-feather="square"></i><span class="menu-title text-truncate" data-i18n="Modal Examples">Chat</span></a></li>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="/mediator/ticket/"><i data-feather="square"></i><span class="menu-title text-truncate" data-i18n="Modal Examples">Tickets</span></a></li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="settings"></i><span class="menu-title text-truncate" data-i18n="Settings">Settings</span></a>
                     <ul class="menu-content">
                       <li><a class="d-flex align-items-center" href="../mediator/mediator settings/settings_profile.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Profile">Profile</span></a>
@@ -228,7 +230,7 @@
                             <h2 class="content-header-title float-start mb-0">Ticket Overview</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">Mediator</a>
+                                    <li class="breadcrumb-item"><a href="/mediator/dashboard/">Mediator</a>
                                     </li>
                                     <li class="breadcrumb-item active">Tickets
                                     </li>
@@ -259,11 +261,11 @@
                 
                 
                 <!-- List DataTable - need to use actual component rather than this copy&paste -->
-                <div class="row">
+                <div class="row" style="overflow: auto; overflow-x: hidden;">
 
                     <div class="col-12">
 
-                        <div class="card invoice-list-wrapper">
+                        <div class="card invoice-list-wrapper" style="height: 80vh;">
                             <div class="card-datatable table-responsive">
                                 <table class="invoice-list-table table">
                                     <thead>
@@ -277,51 +279,37 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr>
-                                        <th>########</th>
-                                        <th>Clientus Missus</th>
-                                        <th>09/11/2011</th>
-                                        <th><span class="badge rounded-pill badge-light-primary me-1">Active</span></th>
-                                        <th><button class="btn btn-info waves-effect waves-float waves-light">Open</button></th>
-                                    </tr>
+                                    <div th:each="ticket : ${tickets}">
 
-                                    <tr>
-                                        <th>########</th>
-                                        <th>Clientus Missus</th>
-                                        <th>09/11/2011</th>
-                                        <th><span class="badge rounded-pill badge-light-primary me-1">Active</span></th>
-                                        <th><button class="btn btn-info waves-effect waves-float waves-light">Open</button></th>
-                                    </tr>
+                                        <tr>
 
-                                    <tr>
-                                        <th>########</th>
-                                        <th>Clientus Missus</th>
-                                        <th>09/11/2011</th>
-                                        <th><span class="badge rounded-pill badge-light-primary me-1">Active</span></th>
-                                        <th><button class="btn btn-info waves-effect waves-float waves-light">Open</button></th>
-                                    </tr>
+                                            <th th:text="${ticket.getId()}">#</th>
+                                            <th th:text="${ticket.getComplainant().getName()}">Clientus Missus</th>
+                                            <th th:text="${ticket.getCreationDate().toString()}">09/11/2011</th>
+
+                                            <th th:if="${ticket.getStatus().toString() == 'OPEN'}">
+                                                <span class="badge rounded-pill badge-light-primary me-1">Active</span>
+                                            </th>
+                                            <th th:if="${ticket.getStatus().toString() == 'PENDING'}">
+                                                <span class="badge rounded-pill badge-light-warning me-1">Pending</span>
+                                            </th>
+                                            <th th:if="${ticket.getStatus().toString() == 'CLOSED'}">
+                                                <span class="badge rounded-pill badge-light-danger me-1">Closed</span>
+                                            </th>
+
+                                            <th>
+                                                <button type="button" th:onclick="'window.location.href=\'/mediator/ticket/' + ${ticket.getId()} + '/\' '"
+                                                        class="btn btn-info waves-effect waves-float waves-light">Open</button>
+                                            </th>
+
+                                        </tr>
+
+                                    </div>
+
 
                                 </tbody></table>
                             </div>
                         </div>
-
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination mt-3 justify-content-center">
-                              <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                              </li>
-                              <li class="page-item"><a class="page-link" href="#">1</a></li>
-                              <li class="page-item active" aria-current="page">
-                                <a class="page-link" href="#">2</a>
-                              </li>
-                              <li class="page-item"><a class="page-link" href="#">3</a></li>
-                              <li class="page-item"><a class="page-link" href="#">4</a></li>
-                              <li class="page-item"><a class="page-link" href="#">5</a></li>
-                              <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
-                              </li>
-                            </ul>
-                        </nav>
 
                     </div>
 

@@ -56,12 +56,15 @@ public class TicketControllerRest {
         SupportTicketStatusEnum tStatus = SupportTicketStatusEnum.valueOf(
             grabReq.getStatus().toUpperCase()
         );
+
         List<SupportTicket> ticketList = this.ticketService.mediator_GetAllTicketsWithStatus(
             tStatus
         );
 
         System.out.println("Got list of tickets: " + ticketList.size());
+
         return JsonData.buildSuccess("");
+
     }
 
     @PostMapping("/status")

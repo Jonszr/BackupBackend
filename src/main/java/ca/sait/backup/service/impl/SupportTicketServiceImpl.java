@@ -43,8 +43,9 @@ public class SupportTicketServiceImpl implements SupportTicketService {
 
     @Override
     public List<SupportTicket> getSupportTicketsForUser(User user) {
+
         List<SupportTicket> tickets = this.ticketRepository.findAllByComplainant(
-            new Long(user.getId())
+            user
         );
 
         return tickets;
