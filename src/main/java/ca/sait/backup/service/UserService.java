@@ -13,6 +13,8 @@ public interface UserService{
 
     boolean processRegister(String email, String password, String name, String phone);
 
+    public User dev_GetUserByEmail(String email);
+
     User dev_GetUserById(Long id);
 
 }

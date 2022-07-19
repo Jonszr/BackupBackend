@@ -28,6 +28,9 @@ public class User {
     private String email;
     private String phone;
 
+    @Enumerated(EnumType.ORDINAL)
+    private UserRole role;
+
     @CreationTimestamp
     private Date creationDate;
 
