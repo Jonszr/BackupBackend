@@ -6,9 +6,6 @@ import ca.sait.backup.model.request.CreateNewProjectRequest;
 
 import java.util.List;
 
-/**
- * Experimentation purposes - Ibrahim
- */
 
 public interface ProjectService {
 

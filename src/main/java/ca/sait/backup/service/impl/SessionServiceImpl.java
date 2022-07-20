@@ -2,18 +2,44 @@ package ca.sait.backup.service.impl;
 
 import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.entity.User;
+import ca.sait.backup.model.entity.UserNotification;
+import ca.sait.backup.service.NotificationService;
 import ca.sait.backup.service.SessionService;
 import ca.sait.backup.utils.JWTUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 public class SessionServiceImpl implements SessionService {
+
+    @Autowired
+    private NotificationService notificationService;
+
+    public void exposeEssentialVariables(HttpServletRequest request, Model model) {
+
+        JWTSessionContainer jwtSessionContainer = this.extractSession(
+            request
+        );
+
+        List<UserNotification> notifications = this.notificationService.backend_getUnreadNotificationsForUser(
+          new User(jwtSessionContainer.getUserId())
+        );
+
+        // Note: Please do not change these parameters, they are used throughout the rendering engine.
+        model.addAttribute("sessionContainer", jwtSessionContainer);
+        model.addAttribute("userNotifications", notifications);
+
+
+
+    }
 
     public JWTSessionContainer extractSession(HttpServletRequest request) {
 

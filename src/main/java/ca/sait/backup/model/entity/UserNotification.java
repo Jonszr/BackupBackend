@@ -1,41 +1,37 @@
 package ca.sait.backup.model.entity;
 
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Builder
 @Data
-@Table(name = "user")
+@Table(name = "user_notification")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-
-    public User(Long id) {
-        this.setId(id);
-    }
+public class UserNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Project> projects;
-
-    private String name;
-    private String password;
-    private String email;
-    private String phone;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Enumerated(EnumType.ORDINAL)
-    private UserRole role;
+    private UserNotificationEnum type;
 
     @CreationTimestamp
     private Date creationDate;
+
+    private String body;
+    private boolean viewed;
 
 }
