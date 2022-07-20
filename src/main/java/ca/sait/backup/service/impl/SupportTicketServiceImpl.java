@@ -28,15 +28,32 @@ public class SupportTicketServiceImpl implements SupportTicketService {
 
     @Override
     public SupportTicket createNewSupportTicket(User user, CreateNewSupportTicketRequest req) {
+
         SupportTicket supportTicket = new SupportTicket();
+
         supportTicket.setComplainant(user);
         supportTicket.setTitle(req.getTitle());
-        supportTicket.setDescription(req.getTitle());
+        supportTicket.setDescription(req.getDescription());
         supportTicket.setStatus(
             SupportTicketStatusEnum.OPEN
         );
 
         this.ticketRepository.save(supportTicket);
+
+        // We also need to set the description as the initial message
+        SupportTicketChat initialMessage = new SupportTicketChat();
+
+        initialMessage.setMessage(
+            req.getDescription()
+        );
+        initialMessage.setFrom(
+            user
+        );
+        initialMessage.setTicket(supportTicket);
+
+        this.ticketChatRepository.save(
+            initialMessage
+        );
 
         return supportTicket;
     }
