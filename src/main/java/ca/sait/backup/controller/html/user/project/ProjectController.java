@@ -9,6 +9,7 @@ import ca.sait.backup.model.entity.Project;
 import ca.sait.backup.service.AssetService;
 
 import ca.sait.backup.service.ProjectService;
+import ca.sait.backup.service.SessionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +34,14 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @GetMapping("/")
-    public String GetProjectHome(@PathVariable("projectId") Long projectId, Model model) {
+    public String GetProjectHome(@PathVariable("projectId") Long projectId, Model model, HttpServletRequest request) {
+
+        // Expose session variables
+        this.sessionService.exposeEssentialVariables(request, model);
 
         // Get project using provided id
 
@@ -86,7 +94,11 @@ public class ProjectController {
     }
 
     @GetMapping("/requests")
-    public String ProjectAssetRequests() {
+    public String ProjectAssetRequests(Model model, HttpServletRequest request) {
+
+        // Expose session variables
+        this.sessionService.exposeEssentialVariables(request, model);
+
         return "/user/project_request.html";
     }
 

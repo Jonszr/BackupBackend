@@ -60,27 +60,9 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 <body class="vertical-layout vertical-menu-modern  navbar-floating footer-static   menu-collapsed" data-open="click" data-menu="vertical-menu-modern" data-col="">
 
 <!-- BEGIN: Header-->
-<nav class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
-    <div class="navbar-container d-flex content">
-        <div class="bookmark-wrapper d-flex align-items-center">
-            <ul class="nav navbar-nav d-xl-none">
-                <li class="nav-item"><a class="nav-link menu-toggle" href="#"><i class="ficon" data-feather="menu"></i></a></li>
-            </ul>
-            <ul class="nav navbar-nav">
-                <li class="nav-item d-none d-lg-block"><a class="nav-link nav-link-style"><i class="ficon" data-feather="moon"></i></a></li>
-            </ul>
-        </div>
-        <ul class="nav navbar-nav align-items-center ms-auto">
-            <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">Ibrahim Element</span><span class="user-status">Project Manager</span></div><span class="avatar"><img class="round" src="/app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
-            </a>
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a class="dropdown-item" href="#"><i class="me-50" data-feather="user"></i> Profile</a><a class="dropdown-item" href="#"><i class="me-50" data-feather="mail"></i> Inbox</a><a class="dropdown-item" href="#"><i class="me-50" data-feather="check-square"></i> Task</a><a class="dropdown-item" href="#"><i class="me-50" data-feather="message-square"></i> Chats</a>
-                    <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="me-50" data-feather="settings"></i> Settings</a><a class="dropdown-item" href="#"><i class="me-50" data-feather="credit-card"></i> Pricing</a><a class="dropdown-item" href="#"><i class="me-50" data-feather="help-circle"></i> FAQ</a><a class="dropdown-item" href="#"><i class="me-50" data-feather="power"></i> Logout</a>
-                </div>
-            </li>
-        </ul>
-    </div>
-</nav>
+<div th:replace="fragment/top-nav-bar.html
+            :: notification(sessionContainer = ${sessionContainer}, userNotifications = ${userNotifications})">
+</div>
 <!-- END: Header-->
 
 
@@ -244,6 +226,34 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 
             </div>
 
+            <!-- BEGIN: Check no projects -->
+
+            <th th:if="${projectGrid.size() == 0}">
+
+                <div class="row">
+
+                    <div class="col-lg-12 col-md-12 col-12">
+
+                        <div  style="margin-top: 1em;" class="card text-center shadow-none bg-transparent border-info col-12">
+
+                            <div class="card-body">
+                                <h4 class="card-title" style="margin-bottom: 0.5em;">Create a new Project</h4>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-plus" style="width: 50px; height: 50px; margin-bottom: 1em;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                                <p class="card-text">You're not a member of any projects, either create one or wait for a project invitation.</p>
+                                <button type="button" class="btn btn-flat-success waves-effect">New Project</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </th>
+
+            <!-- END: Check no projects -->
+
             <!-- BEGIN: Project Insertion (Rows) -->
 
             <!-- For each row in the project grid -->
@@ -251,89 +261,10 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
                 
                 <!-- For each item in the row -->
                 <div th:each="project : ${projectRow}" class="col-lg-4 col-md-6 col-12">
-                    
-                    <div class="card card-developer-meetup">
 
-                        <div class="meetup-img-wrapper rounded-top text-center">
-                            <img src="/images/project.svg" alt="Meeting Pic" height="170">
-                        </div>
-
-                        <div class="card-body">
-
-                            <!-- Will contain the date of the project -->
-                            <div class="meetup-header d-flex align-items-center">
-
-                                <div class="meetup-day">
-                                    <h6 class="mb-0">ASSETS</h6>
-                                    <h4 class="mb-0">24</h4>
-                                </div>
-
-                                <div class="my-auto">
-                                    <h4 th:text="${project.getName()}" class="card-title mb-25">Checkered Cabs</h4>
-                                    <p th:text="${project.getDescription()}" class="card-text mb-0">Calgary's #1 Taxi Service</p>
-                                </div>
-
-                            </div>
-
-                            <!-- Contains important info on the project (client and agency)-->
-                            <div class="mt-0">
-                                <div class="avatar float-start bg-light-primary rounded me-1">
-                                    <div class="avatar-content">
-                                        <i data-feather="github" class="avatar-icon"></i>
-                                    </div>
-                                </div>
-                                <div class="more-info">
-                                    <h6 class="mb-0">Luckymarc Gumboc</h6>
-                                    <small>Project Manager</small>
-                                </div>
-                            </div>
-
-                            <div class="mt-2">
-                                <div class="avatar float-start bg-light-primary rounded me-1">
-                                    <div class="avatar-content">
-                                        <i data-feather="github" class="avatar-icon"></i>
-                                    </div>
-                                </div>
-                                <div class="more-info">
-                                    <h6 class="mb-0">Ryan Hnetka</h6>
-                                    <small>Client Representative</small>
-                                </div>
-                            </div>
-
-                            <!-- Contains list of members connected to the project-->
-                            <div class="design-group pt-25 mt-1">
-                                <h6 class="section-label">Members</h6>
-
-                                <div class="avatar-group mt-0">
-                                    <div data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="bottom" title class="avatar pull-up" data-bs-original-title="Ibrahim Element">
-                                        <img src="https://pixinvent.com/demo/vuexy-html-bootstrap-admin-template/app-assets/images/portrait/small/avatar-s-9.jpg" width="34" height="34" alt="Avatar">
-                                    </div>
-                                    <div data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="bottom" title class="avatar pull-up" data-bs-original-title="Ivan Lavena">
-                                        <div class="avatar-content">IL</div>
-                                    </div>
-                                    <div data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="bottom" title class="avatar pull-up" data-bs-original-title="Xin Su">
-                                        <div class="avatar-content">XS</div>
-                                    </div>
-                                    <div data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="bottom" title class="avatar pull-up" data-bs-original-title="Jeonghun Park">
-                                        <div class="avatar-content">JP</div>
-                                    </div>
-                                    <div data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="bottom" title class="avatar pull-up" data-bs-original-title="Alexander Yee">
-                                        <div class="avatar-content">AY</div>
-                                    </div>
-                                    <h6 class="align-self-center cursor-pointer ms-50 mb-0">+4</h6>
-                                </div>
-
-
-                                <!-- Button to navigate to the project -->
-                                <button type="button" th:onclick="'window.location.href=\'/user/project/' + ${project.getId()} + '/\' '"
-                                        class="btn btn-primary w-100 waves-effect waves-float waves-light mt-1">Select Project</button>
-
-                            </div>
-
-                        </div>
-
+                    <div th:replace="fragment/project-card.html
+                        :: projectCard(project = ${project})">
                     </div>
-
 
                 </div>
 
@@ -369,7 +300,7 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
                                         <div class="step active" data-target="#create-app-details" role="tab" id="create-app-details-trigger">
                                             <button type="button" class="step-trigger py-75" aria-selected="true">
                                                     <span class="bs-stepper-box">
-                                                        <i data-feather="github"></i>
+                                                        <i data-feather="info"></i>
                                                     </span>
                                                 <span class="bs-stepper-label">
                                                         <span class="bs-stepper-title">Details</span>
@@ -381,7 +312,7 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
                                         <div class="step" data-target="#create-app-people" role="tab" id="create-app-people-trigger">
                                             <button type="button" class="step-trigger py-75" aria-selected="false">
                                                     <span class="bs-stepper-box">
-                                                        <i data-feather="github"></i>
+                                                        <i data-feather="user-plus"></i>
                                                     </span>
                                                 <span class="bs-stepper-label">
                                                         <span class="bs-stepper-title">People</span>
@@ -400,12 +331,12 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
                                         <div id="create-app-details" class="content dstepper-block active" role="tabpanel" aria-labelledby="create-app-details-trigger">
 
                                             <h5>Project Name</h5>
-                                            <input class="form-control" type="text" placeholder="MyProject1">
+                                            <input id="projectName" class="form-control" type="text" placeholder="MyProject1">
 
                                             <h5 style="margin-top: 1em;">Project Description</h5>
-                                            <input class="form-control" type="text" placeholder="Data Management and Logistics Portal for MyProject1">
+                                            <input id="projectDescription" class="form-control" type="text" placeholder="Data Management and Logistics Portal for MyProject1">
 
-                                            <h5 class="mt-2 pt-1">Project Banner (image)</h5>
+                                            <h5 class="mt-2 pt-1">Project Banner URL</h5>
 
                                             <!-- Here is a list group which belongs to each item in the form -->
                                             <ul class="list-group list-group-flush">
@@ -415,24 +346,13 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 
                                                     <label for="createAppCrm" class="d-flex cursor-pointer">
 
-                                                            <span class="avatar avatar-tag bg-light-info me-1">
-                                                                <i data-feather="github"></i>
-                                                            </span>
+                                                        <span class="avatar avatar-tag bg-light-info me-1">
+                                                            <i data-feather='link'></i>
+                                                        </span>
 
                                                         <span class="d-flex align-items-center justify-content-between flex-grow-1">
-
-                                                                <span class="me-1">
-                                                                    <span class="h5 d-block fw-bolder">Upload Image</span>
-                                                                    <span>
-                                                                        Default banners are provided
-                                                                    </span>
-                                                                </span>
-
-                                                                <span>
-                                                                    <button type="button" class="btn btn-info">Upload</button>
-                                                                </span>
-
-                                                            </span>
+                                                            <input id="projectBannerUrl" class="form-control" type="text" placeholder="https://www.imgur.com/banner.png">
+                                                        </span>
 
                                                     </label>
 
@@ -449,8 +369,8 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 
                                             <div class="d-flex justify-content-between mt-2">
 
-                                                <input class="form-control" type="text" placeholder="user@sait.edu.ca">
-                                                <button id="inviteUserBtn" class="btn btn-outline-warning btn-prev waves-effect" style="margin-left: 0.5em;">
+                                                <input class="form-control" id="inviteUserEmail" type="text" placeholder="user@sait.edu.ca">
+                                                <button id="inviteUserBtn" onclick="addMemberToProject()" class="btn btn-outline-warning btn-prev waves-effect" style="margin-left: 0.5em;">
                                                     <i data-feather="send"></i>
                                                     <a>Add</a>
                                                 </button>
@@ -460,38 +380,7 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
                                             <h5 class="mt-2 pt-1">Current Invitation List</h5>
 
                                             <!-- Here is a list group which holds each user in the invitation list -->
-                                            <ul class="list-group list-group-flush mb-2">
-
-                                                <li class="list-group-item d-flex align-items-start border-0 px-0">
-
-                                                    <div class="avatar me-75">
-                                                        <div class="avatar-content">AY</div>
-                                                    </div>
-
-                                                    <div class="d-flex align-items-center justify-content justify-content-between w-100">
-
-                                                        <div class="me-1">
-                                                            <h5 class="mb-25">Alexander Yee</h5>
-                                                            <span>alexander.yee@sait.edu.ca</span>
-                                                        </div>
-
-                                                        <div class="dropdown">
-                                                            <button class="btn btn-flat-secondary dropdown-toggle waves-effect" type="button" id="inviteMember1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <span class="d-none d-lg-inline-block">Agency</span>
-                                                            </button>
-                                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="inviteMember1" style>
-                                                                <li>
-                                                                    <a class="dropdown-item" href="#">Agency</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="dropdown-item" href="#">Client</a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-
-                                                    </div>
-
-                                                </li>
+                                            <ul id="memberInvitationList" class="list-group list-group-flush mb-2" style="height: 10vh; overflow: auto;">
 
                                             </ul>
 
@@ -522,6 +411,7 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 
                             </div>
 
+
                         </div>
 
                     </div>
@@ -531,6 +421,30 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 
             </div>
 
+            <div id="memberInvitationListItemTemplate" style="display: none;">
+                <li  class="list-group-item d-flex align-items-start border-0 px-0">
+
+                    <div class="avatar me-75">
+                        <div class="avatar-content">AY</div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content justify-content-between w-100">
+
+                        <div class="me-1">
+                            <h5 id="templateName" class="mb-25">Alexander Yee</h5>
+                            <span id="templateEmail">alexander.yee@sait.edu.ca</span>
+                        </div>
+
+                        <div>
+                            <button onclick="removeMember(this)" class="btn btn-flat-secondary waves-effect" type="button" id="inviteMember1">
+                                Remove
+                            </button>
+                        </div>
+
+                    </div>
+
+                </li>
+            </div>
 
         </div>
 
@@ -557,6 +471,7 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 <!-- BEGIN: Page Vendor JS-->
 <script src="/app-assets/vendors/js/forms/wizard/bs-stepper.min.js"></script>
 <script src="/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+<script src="/custom-scripts/axios.min.js"></script>
 <!-- END: Page Vendor JS-->
 
 <!-- BEGIN: Theme JS-->
@@ -590,6 +505,74 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
             sequence: ["#create-app-details", "#create-app-people"]
         };
 
+        async function addMemberToProject() {
+
+            console.log("Member added to project");
+
+            let inviteUserInput = document.querySelector('#inviteUserEmail');
+            let userEmail = inviteUserInput.value;
+            inviteUserInput.value = "";
+
+            let userInvitationTemplate = document.querySelector('#memberInvitationListItemTemplate').cloneNode(true);
+
+            userInvitationTemplate.querySelector('#templateName').innerText = "New Member";
+            userInvitationTemplate.querySelector('#templateEmail').innerText = userEmail;
+
+            userInvitationTemplate.style.display = "block";
+
+            document.querySelector('#memberInvitationList').appendChild(
+                userInvitationTemplate
+            );
+
+            console.log(userInvitationTemplate);
+
+        }
+
+        async function removeMember(elem) {
+            console.log("Remove invite called for: ", elem);
+
+            let email = elem.parentElement.parentElement.parentElement.parentElement;
+
+            document.querySelector('#memberInvitationList').removeChild(
+                email
+            );
+
+        }
+
+        async function sendCreateNewProject() {
+
+            console.log("Send create new project triggered");
+
+            // Get project details
+            let projectBannerUrl = document.querySelector('#projectBannerUrl').value;
+            let projectDescription = document.querySelector('#projectDescription').value;
+            let projectName = document.querySelector('#projectName').value;
+
+            // Get invitation list
+            let invitationList = document.querySelector('#memberInvitationList');
+
+            let inviteListElem = invitationList.querySelectorAll('li');
+
+            let invites = [];
+            for (let invite of inviteListElem) {
+                invites.push(
+                    invite.querySelector('#templateEmail').innerText
+                );
+            }
+
+            let payload = {
+                bannerLocation: projectBannerUrl,
+                description: projectDescription,
+                name: projectName,
+                invitationList: invites
+            };
+
+            await axios.post('/api/v1/pri/user/project/create', payload);
+
+            document.location = '';
+
+        }
+
         async function ConfigureCreateNewProjectModal() {
 
             let prevBtn = document.querySelector('#newProjectModalPrevBtn');
@@ -602,6 +585,11 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
 
                 newProjectModalMemory.currentPage++;
 
+                // Check if we are already on the last page
+                if (newProjectModalMemory.currentPage + 1 > newProjectModalMemory.sequence.length) {
+                    sendCreateNewProject();
+                }
+
                 // Check if end of the sequence
                 if (newProjectModalMemory.currentPage + 1 == newProjectModalMemory.sequence.length) {
                     console.log("Max nav hit");
@@ -609,8 +597,6 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
                     nextBtn.classList.remove('btn-outline-info');
                     nextBtn.classList.add('btn-success');
                 }
-
-                console.log(newProjectModalMemory.currentPage);
 
                 // Enable previous button
                 if (newProjectModalMemory.currentPage == 1) {
@@ -689,8 +675,6 @@ class="loading bordered-layout" lang="en" data-layout="bordered-layout" data-tex
                 ).classList.add('active');
 
             }
-
-            console.log("Hello world!");
 
         }
 

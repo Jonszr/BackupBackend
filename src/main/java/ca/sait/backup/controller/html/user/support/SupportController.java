@@ -33,6 +33,8 @@ public class SupportController {
     @GetMapping("/")
     public String GetSupportHome(Model model, HttpServletRequest request) {
 
+        this.sessionService.exposeEssentialVariables(request, model);
+
         JWTSessionContainer sessionContainer = this.sessionService.extractSession(
             request
         );

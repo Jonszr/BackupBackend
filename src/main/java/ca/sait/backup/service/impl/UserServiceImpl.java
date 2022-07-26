@@ -2,6 +2,7 @@ package ca.sait.backup.service.impl;
 
 import ca.sait.backup.mapper.UserRepository;
 import ca.sait.backup.model.entity.User;
+import ca.sait.backup.model.entity.UserRole;
 import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -73,6 +75,14 @@ public class UserServiceImpl implements UserService {
         this.uRepository.save(user);
 
         return true;
+    }
+
+    public List<User> dev_GetUsersByRole(UserRole role) {
+        List<User> users = this.uRepository.findByRole(
+            role
+        );
+
+        return users;
     }
 
     @Override

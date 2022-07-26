@@ -1,6 +1,7 @@
 package ca.sait.backup.service;
 
 import ca.sait.backup.model.entity.User;
+import ca.sait.backup.model.entity.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ public interface UserService{
     boolean processRegister(String email, String password, String name, String phone);
 
     public User dev_GetUserByEmail(String email);
+
+    public List<User> dev_GetUsersByRole(UserRole role);
 
     User dev_GetUserById(Long id);
 

@@ -38,11 +38,7 @@ class UserDashboardController {
         // Expose session variables
         this.sessionService.exposeEssentialVariables(request, model);
 
-        // Temporary just for testing
-        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
-            request
-        );
-
+ 
         return ("/user/dashboard");
 
     }

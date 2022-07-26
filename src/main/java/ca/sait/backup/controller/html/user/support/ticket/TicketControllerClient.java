@@ -2,6 +2,7 @@ package ca.sait.backup.controller.html.mediator.ticket;
 
 import ca.sait.backup.model.entity.SupportTicket;
 import ca.sait.backup.model.entity.SupportTicketStatusEnum;
+import ca.sait.backup.service.SessionService;
 import ca.sait.backup.service.SupportTicketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +25,14 @@ public class TicketControllerClient {
     @Autowired
     SupportTicketService ticketService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @GetMapping("/{ticketId}")
-    public String GetSpecificTicket(@PathVariable("ticketId") Long ticketId, Model model) {
+    public String GetSpecificTicket(@PathVariable("ticketId") Long ticketId, Model model, HttpServletRequest request) {
+
+        // Expose session variables
+        this.sessionService.exposeEssentialVariables(request, model);
 
         SupportTicket ticket = this.ticketService.mediator_GetTicketById(
                 ticketId

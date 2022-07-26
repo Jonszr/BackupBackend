@@ -1,14 +1,17 @@
 package ca.sait.backup.controller.html.user.project;
 
+import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.entity.Asset;
 import ca.sait.backup.model.entity.AssetFolder;
 import ca.sait.backup.model.entity.Category;
 import ca.sait.backup.model.entity.Project;
 import ca.sait.backup.model.request.AssetRequest;
 import ca.sait.backup.model.request.CategoryRequest;
+import ca.sait.backup.model.request.CreateNewProjectRequest;
 import ca.sait.backup.model.request.FolderRequest;
 import ca.sait.backup.service.AssetService;
 import ca.sait.backup.service.ProjectService;
+import ca.sait.backup.service.SessionService;
 import ca.sait.backup.utils.JsonData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * Usage: Asset Exploration
  */
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -33,6 +37,24 @@ public class ProjectControllerRest {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private SessionService sessionService;
+
+    @PostMapping("/create")
+    public JsonData createNewProject(@RequestBody CreateNewProjectRequest projReq, HttpServletRequest request) throws Exception {
+
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        this.projectService.createNewProject(
+            sessionContainer.getUserId(),
+            projReq
+        );
+
+        return JsonData.buildSuccess("");
+    }
 
     @GetMapping("/folders/{folderId}")
     public JsonData listFoldersInsideFolder(@PathVariable("folderId") Integer folderId) throws Exception {

@@ -32,6 +32,10 @@ public class AssetFolder {
     @JoinColumn(name = "assetfolder_id")
     private AssetFolder parent;
 
+    @OneToOne()
+    @JoinColumn(name = "asset_security_profile_id")
+    private AssetSecurityProfile securityProfile;
+
     @Expose
     private String name;
 
