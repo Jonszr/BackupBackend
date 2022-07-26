@@ -23,6 +23,8 @@ public class AssetSecurityApproval {
     @JoinColumn(name = "asset_security_profile_id")
     private AssetSecurityProfile securityProfile;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
 }

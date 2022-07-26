@@ -25,6 +25,10 @@ public class Asset {
     @JoinColumn(name = "assetfolder_id")
     private AssetFolder parent;
 
+    @OneToOne
+    @JoinColumn(name = "asset_security_profile_id")
+    private AssetSecurityProfile securityProfile;
+
     private String assetName;
     private String assetType;
     private String assetValue;

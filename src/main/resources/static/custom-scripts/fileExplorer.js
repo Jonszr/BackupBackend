@@ -42,6 +42,12 @@ class FileExplorer {
         let res = await axios.post(`/api/v1/pri/user/project/folders/${projectId}`, jsn);
     }
 
+    async GetSecurityConfigAPI(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/assets/security/${projectId}/getSecurityConfig`, jsn);
+        return res;
+    }
+
     // Asset
     async CreateAsset(asset) {
 
@@ -238,7 +244,107 @@ class FileExplorer {
 
     }
 
+    async sec_PasswordProtected() {
+        const { value: password } = await Swal.fire({
+          title: 'Asset Protected',
+          icon: 'error',
+          input: 'password',
+          inputLabel: 'Password',
+          inputPlaceholder: 'Enter your password',
+          inputAttributes: {
+            maxlength: 10,
+            autocapitalize: 'off',
+            autocorrect: 'off'
+          }
+        })
+        return password;
+    }
+
+    async sec_RequestExclusive() {
+        const { value: message } = await Swal.fire({
+          title: 'Request Access',
+          icon: 'error',
+          input: 'text',
+          inputLabel: 'Message',
+          inputPlaceholder: 'I would like access to this asset please',
+          inputAttributes: {
+            maxlength: 100,
+            autocapitalize: 'off',
+            autocorrect: 'off'
+          }
+        });
+        return message;
+    }
+
+    async sec_UnlockStatus(success) {
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+
+        if (success) {
+            Toast.fire({
+                  icon: 'success',
+                  title: 'Asset Unlocked!'
+            })
+        }else {
+            Toast.fire({
+                  icon: 'error',
+                  title: 'Invalid Password'
+            })
+        }
+
+    }
+
+    async HandleSecurity(context) {
+
+        let isProtected = context.querySelector('#asset-locked') != null;
+
+        if (isProtected) {
+
+            // Lock asset card
+            let [type, assetId] = context.id.split('-');
+
+            this.BlockElement(`#${context.id}`);
+            let res = await this.GetSecurityConfigAPI({
+                "assetId": assetId,
+                "assetType": type,
+                "lockType": "",
+                "lockConfiguration": ""
+            });
+            this.UnblockElement(`#${context.id}`);
+
+            let config = JSON.parse(res.data.msg);
+
+            if (config.type == "password") {
+                let password = await this.sec_PasswordProtected();
+            }else if(config.type == "time-release") {
+                // Not implemented
+            }else if (config.type == "request-exclusive") {
+                await this.sec_RequestExclusive();
+            }
+
+            // Get security configuration
+            await this.sec_UnlockStatus(false);
+
+            return false;
+        }
+
+        return true;
+    }
+
     async OpenFolder(context) {
+
+        let passedSecurity = await this.HandleSecurity(context.parentNode);
+        if (!passedSecurity) return 0;
 
         context = context.parentNode;
         console.log("Got context: " + context.id);

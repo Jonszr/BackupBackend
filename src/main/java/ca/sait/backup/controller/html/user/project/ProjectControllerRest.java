@@ -5,10 +5,7 @@ import ca.sait.backup.model.entity.Asset;
 import ca.sait.backup.model.entity.AssetFolder;
 import ca.sait.backup.model.entity.Category;
 import ca.sait.backup.model.entity.Project;
-import ca.sait.backup.model.request.AssetRequest;
-import ca.sait.backup.model.request.CategoryRequest;
-import ca.sait.backup.model.request.CreateNewProjectRequest;
-import ca.sait.backup.model.request.FolderRequest;
+import ca.sait.backup.model.request.*;
 import ca.sait.backup.service.AssetService;
 import ca.sait.backup.service.ProjectService;
 import ca.sait.backup.service.SessionService;
@@ -195,6 +192,26 @@ public class ProjectControllerRest {
         category.setDescription(categoryRequest.getDescription());
 
         this.assetService.createCategory(category);
+
+        return JsonData.buildSuccess("");
+    }
+
+    @PostMapping("/assets/security/{projectId}/getSecurityConfig")
+    public JsonData getSecConfig(@PathVariable("projectId") Integer projectId, @RequestBody LockAssetRequest lockAssetRequest) {
+
+        String securityConfig = this.assetService.getSecurityConfig(
+            lockAssetRequest
+        );
+
+        return JsonData.buildSuccess(securityConfig);
+    }
+
+    @PostMapping("/assets/security/{projectId}")
+    public JsonData lockAsset(@PathVariable("projectId") Integer projectId, @RequestBody LockAssetRequest lockAssetRequest) {
+
+        this.assetService.lockAsset(
+            lockAssetRequest
+        );
 
         return JsonData.buildSuccess("");
     }

@@ -21,8 +21,11 @@ public class AssetSecurityProfile {
     private Long id;
 
     // Relationships
-    @OneToMany(mappedBy = "asset_security_profile", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "securityProfile", cascade = CascadeType.ALL)
     private List<AssetSecurityApproval> approvalList;
+
+    @OneToOne(mappedBy = "securityProfile")
+    private Asset asset;
 
     // Security settings
     @Enumerated(EnumType.STRING)

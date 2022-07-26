@@ -2,10 +2,7 @@ package ca.sait.backup.controller.html.user.project;
 
 
 import ca.sait.backup.component.user.CategoryAssociation;
-import ca.sait.backup.model.entity.Asset;
-import ca.sait.backup.model.entity.AssetFolder;
-import ca.sait.backup.model.entity.Category;
-import ca.sait.backup.model.entity.Project;
+import ca.sait.backup.model.entity.*;
 import ca.sait.backup.service.AssetService;
 
 import ca.sait.backup.service.ProjectService;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -88,7 +86,9 @@ public class ProjectController {
         }
 
         // Feed the rendering agent the data through the UI component.
+        model.addAttribute("project", project);
         model.addAttribute("categoryAssociationList", categoryAssociationList);
+        model.addAttribute("assetService", this.assetService);
 
         return "/user/asset_explorer.html";
     }

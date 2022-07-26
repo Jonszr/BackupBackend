@@ -37,8 +37,6 @@ public class SessionServiceImpl implements SessionService {
         model.addAttribute("sessionContainer", jwtSessionContainer);
         model.addAttribute("userNotifications", notifications);
 
-
-
     }
 
     public JWTSessionContainer extractSession(HttpServletRequest request) {

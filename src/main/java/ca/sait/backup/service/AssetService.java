@@ -1,10 +1,12 @@
 package ca.sait.backup.service;
 
 
+import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.entity.Asset;
 import ca.sait.backup.model.entity.AssetFolder;
 import ca.sait.backup.model.entity.Category;
 import ca.sait.backup.model.entity.Project;
+import ca.sait.backup.model.request.LockAssetRequest;
 
 import java.util.List;
 
@@ -46,5 +48,16 @@ public interface AssetService {
     void updateAsset(Asset asset, Integer categoryId);
 
     void deleteAsset(Asset asset);
+
+    // Asset Security
+    void lockAsset(LockAssetRequest lockRequest);
+
+    String getSecurityConfig(LockAssetRequest assetInfo);
+
+    boolean ui_isApprovedMember(JWTSessionContainer sessionContainer, Asset asset);
+
+    boolean ui_isApprovedMember(JWTSessionContainer sessionContainer, AssetFolder assetFolder);
+
+    void dev_approveMember(Long userId, Long assetId);
 
 }

@@ -21,7 +21,8 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/fonts/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/extensions/jstree.min.css">
     <link rel="stylesheet" type="text/css" href="/custom-assets/animations/animate.min.css">
-
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/extensions/ext-component-sweet-alerts.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/extensions/sweetalert2.min.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -234,7 +235,7 @@
                                 </li>
                                 <li class="breadcrumb-item"><a href="index.html">Projects</a>
                                 </li>
-                                <li class="breadcrumb-item active">Taxi Company
+                                <li th:text="${project.getName()}" class="breadcrumb-item active">Taxi Company
                                 </li>
                             </ol>
                         </div>
@@ -711,8 +712,25 @@
                                         <div class="card-body" onclick="window.FileExplorerInst.OpenFolder(this)">
                                             <div class="content-wrapper">
                                                 <p th:text="${folderAsset.getName()}" class="card-text file-name mb-0">Projects</p>
-                                                <p class="card-text file-size mb-0">2gb</p>
-                                                <p class="card-text file-date">01 may 2019</p>
+
+                                                <div th:if="${assetService.ui_isApprovedMember(sessionContainer, folderAsset) == true}">
+                                                    <div class="avatar avatar-sm bg-light-success">
+                                                        <span id="asset-unlocked" class="avatar-content">
+                                                            <!-- You can add Initial letters instead of icon -->
+                                                            <i data-feather="unlock" class="avatar-icon"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div th:if="${assetService.ui_isApprovedMember(sessionContainer, folderAsset) == false}">
+                                                    <div class="avatar avatar-sm bg-light-danger">
+                                                            <span id="asset-locked" class="avatar-content">
+                                                                <!-- You can add Initial letters instead of icon -->
+                                                                <i data-feather="lock" class="avatar-icon"></i>
+                                                            </span>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <small class="file-accessed text-muted">Last accessed: 21 hours ago</small>
                                         </div>
@@ -733,11 +751,29 @@
                                                 <img src="/app-assets/images/icons/jpg.png" alt="file-icon" height="35" />
                                             </div>
                                         </div>
+
                                         <div class="card-body">
                                             <div class="content-wrapper">
                                                 <p th:text="${fileAsset.getAssetName()}" class="card-text file-name mb-0">Profile.jpg</p>
-                                                <p class="card-text file-size mb-0">12.6mb</p>
-                                                <p class="card-text file-date">23 may 2019</p>
+
+                                                <div th:if="${assetService.ui_isApprovedMember(sessionContainer, fileAsset) == true}">
+                                                    <div  class="avatar avatar-sm bg-light-success">
+                                                        <span id="asset-unlocked" class="avatar-content">
+                                                            <!-- You can add Initial letters instead of icon -->
+                                                            <i data-feather="unlock" class="avatar-icon"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div th:if="${assetService.ui_isApprovedMember(sessionContainer, fileAsset) == false}">
+                                                    <div class="avatar avatar-sm bg-light-danger">
+                                                            <span id="asset-unlocked" class="avatar-content">
+                                                                <!-- You can add Initial letters instead of icon -->
+                                                                <i data-feather="lock" class="avatar-icon"></i>
+                                                            </span>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <small class="file-accessed text-muted">Last accessed: 3 hours ago</small>
                                         </div>
@@ -1153,6 +1189,7 @@
 
 <!-- BEGIN: Vendor JS-->
 <script src="/app-assets/vendors/js/vendors.min.js"></script>
+<script src="/app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
 <!-- BEGIN Vendor JS-->
 
 <!-- BEGIN: Page Vendor JS-->
