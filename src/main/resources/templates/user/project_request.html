@@ -1,8 +1,6 @@
-@ -0,0 +1,389 @@
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr"
-      xmlns:th="http://www.thymeleaf.org"
-      class="loading" lang="en" data-textdirection="ltr">
+      xmlns:th="http://www.thymeleaf.org">
 <!-- BEGIN: Head-->
 
 <head>
@@ -133,6 +131,9 @@
         <div class="header-navbar-shadow"></div>
         <div class="content-wrapper container-xxl p-0">
             <div class="content-header row">
+
+
+
             </div>
             <div class="content-body">
                 <!-- Request model start -->
@@ -174,127 +175,39 @@
                                 <span class="badge badge-glow bg-info">Ongoing</span>
                                 </div>
                                     <div class="card-body">
-                                        <div class="accordion accordion-margin" id="accordionMargin">
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="headingMarginOne1">
-                                            <button
-                                                class="accordion-button collapsed btn btn-info waves-effect waves-float waves-light"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#accordionMarginOne1"
-                                                aria-expanded="false"
-                                                aria-controls="accordionMarginOne1"
-                                            >
-                                            Request Ticket No.34
-                                            </button>
-                                            </h2>
-                                            <div
-                                            id="accordionMarginOne1"
-                                            class="accordion-collapse collapse"
-                                            aria-labelledby="headingMarginOne1"
-                                            data-bs-parent="#accordionMargin"
-                                            >
-                                            <div class="accordion-body">
-                                                Hello, I want my money back.
+                                        <div th:each="request: ${openRequests}" class="accordion accordion-margin" id="accordionMargin">
+
+                                            <div class="accordion-item">
+
+                                                <h2 class="accordion-header" id="headingMarginOne1">
+                                                <button
+                                                    class="accordion-button collapsed btn btn-info waves-effect waves-float waves-light"
+                                                    type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#accordionMarginOne1"
+                                                    aria-expanded="false"
+                                                    aria-controls="accordionMarginOne1"
+                                                    th:text="${assetService.ui_getAssetRequestTitle(sessionContainer, request)}"
+                                                >
+                                                Request Ticket No.34
+                                                </button>
+                                                </h2>
+                                                <div
+                                                id="accordionMarginOne1"
+                                                class="accordion-collapse collapse"
+                                                aria-labelledby="headingMarginOne1"
+                                                data-bs-parent="#accordionMargin"
+                                                >
+                                                <div style="margin-top: 0.5em; font-size: 16px;" th:text="${request.getMessage()}" class="accordion-body">
+                                                    Hello, I want my money back.
+                                                </div>
+                                                <div th:id="${request.getId()}" class="d-flex align-items-center justify-content-between mt-2">
+                                                    <button class="btn btn-danger" onclick="sendAssetApproval(this, false)">Deny</button>
+                                                    <button class="btn btn-success" onclick="sendAssetApproval(this, true)">Approve</button>
+                                                </div>
+                                                </div>
                                             </div>
-                                            <div class="d-flex align-items-center justify-content-between mt-2">
-                                                <button class="btn btn-danger" onclick="">Deny</button>
-                                                <button class="btn btn-success">Approve</button>
-                                            </div>
-                                            </div>
-                                        </div>
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="headingMarginTwo2">
-                                            <button
-                                                class="accordion-button collapsed btn btn-info waves-effect waves-float waves-light"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#accordionMarginTwo2"
-                                                aria-expanded="false"
-                                                aria-controls="accordionMarginTwo2"
-                                            >
-                                            Request Ticket No.35
-                                            </button>
-                                            </h2>
-                                            <div
-                                            id="accordionMarginTwo2"
-                                            class="accordion-collapse collapse"
-                                            aria-labelledby="headingMarginTwo2"
-                                            data-bs-parent="#accordionMargin"
-                                            >
-                                            <div class="accordion-body">
-                                                Sweet pie candy jelly. Sesame snaps biscuit sugar plum. Sweet roll topping fruitcake. Caramels
-                                                liquorice biscuit ice cream fruitcake cotton candy tart. Donut caramels gingerbread jelly-o
-                                                gingerbread pudding. Gummi bears pastry marshmallow candy canes pie. Pie apple pie carrot cake.
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between mt-2">
-                                                <button class="btn btn-danger" onclick="">Deny</button>
-                                                <button class="btn btn-success">Approve</button>
-                                            </div>
-                                            </div>
-                                        </div>
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="headingMarginThree3">
-                                            <button
-                                                class="accordion-button collapsed btn btn-info waves-effect waves-float waves-light"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#accordionMarginThree3"
-                                                aria-expanded="false"
-                                                aria-controls="accordionMarginThree3"
-                                            >
-                                            Request Ticket No.36
-                                            </button>
-                                            </h2>
-                                            <div
-                                            id="accordionMarginThree3"
-                                            class="accordion-collapse collapse"
-                                            aria-labelledby="headingMarginThree3"
-                                            data-bs-parent="#accordionMargin"
-                                            >
-                                            <div class="accordion-body">
-                                                Tart gummies dragée lollipop fruitcake pastry oat cake. Cookie jelly jelly macaroon icing jelly beans
-                                                soufflé cake sweet. Macaroon sesame snaps cheesecake tart cake sugar plum. Dessert jelly-o sweet
-                                                muffin chocolate candy pie tootsie roll marzipan. Carrot cake marshmallow pastry. Bonbon biscuit
-                                                pastry topping toffee dessert gummies. Topping apple pie pie croissant cotton candy dessert tiramisu.
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between mt-2">
-                                                <button class="btn btn-danger" onclick="">Deny</button>
-                                                <button class="btn btn-success">Approve</button>
-                                            </div>
-                                            </div>
-                                        </div>
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="headingMarginFour4">
-                                            <button
-                                                class="accordion-button collapsed btn btn-info waves-effect waves-float waves-light"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#accordionMarginFour4"
-                                                aria-expanded="false"
-                                                aria-controls="accordionMarginFour4"
-                                            >
-                                            Request Ticket No.37
-                                            </button>
-                                            </h2>
-                                            <div
-                                            id="accordionMarginFour4"
-                                            class="accordion-collapse collapse"
-                                            aria-labelledby="headingMarginFour4"
-                                            data-bs-parent="#accordionMargin"
-                                            >
-                                            <div class="accordion-body">
-                                                Cheesecake muffin cupcake dragée lemon drops tiramisu cake gummies chocolate cake. Marshmallow tart
-                                                croissant. Tart dessert tiramisu marzipan lollipop lemon drops. Cake bonbon bonbon gummi bears topping
-                                                jelly beans brownie jujubes muffin. Donut croissant jelly-o cake marzipan. Liquorice marzipan cookie
-                                                wafer tootsie roll. Tootsie roll sweet cupcake.
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between mt-2">
-                                                <button class="btn btn-danger" onclick="">Deny</button>
-                                                <button class="btn btn-success">Approve</button>
-                                            </div>
-                                            </div>
-                                         </div>
+
                                         </div>
                                     </div>
                             </div>
@@ -312,86 +225,36 @@
                             <span class="badge badge-glow bg-secondary">Closed</span>
                           </div>
                             <div class="card-body">
-                                <div class="accordion accordion-margin" id="accordionMargin">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingMarginOne">
-                                    <button
-                                        class="accordion-button collapsed btn btn-gradient-secondary waves-effect waves-float waves-light"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#accordionMarginOne"
-                                        aria-expanded="false"
-                                        aria-controls="accordionMarginOne"
-                                    >
-                                    Request Ticket No.23
-                                    </button>
-                                    </h2>
-                                    <div
-                                    id="accordionMarginOne"
-                                    class="accordion-collapse collapse"
-                                    aria-labelledby="headingMarginOne"
-                                    data-bs-parent="#accordionMargin"
-                                    >
-                                    <div class="accordion-body">
-                                        Pastry pudding cookie toffee bonbon jujubes jujubes powder topping. Jelly beans gummi bears sweet roll
-                                        bonbon muffin liquorice. Wafer lollipop sesame snaps. Brownie macaroon cookie muffin cupcake candy
-                                        caramels tiramisu. Oat cake chocolate cake sweet jelly-o brownie biscuit marzipan. Jujubes donut
-                                        marzipan chocolate bar. Jujubes sugar plum jelly beans tiramisu icing cheesecake.
+                                    <div class="accordion accordion-margin" id="accordionMargin">
+                                    <div th:each="request: ${closedRequests}"  class="accordion-item">
+                                        <h2 class="accordion-header" id="headingMarginOne">
+                                        <button
+                                            class="accordion-button collapsed btn btn-gradient-secondary waves-effect waves-float waves-light"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#accordionMarginOne"
+                                            aria-expanded="false"
+                                            aria-controls="accordionMarginOne"
+                                            th:text="${assetService.ui_getAssetRequestTitle(sessionContainer, request)}"
+                                        >
+                                        Request Ticket No.23
+                                        </button>
+                                        </h2>
+                                        <div
+                                        id="accordionMarginOne"
+                                        class="accordion-collapse collapse"
+                                        aria-labelledby="headingMarginOne"
+                                        data-bs-parent="#accordionMargin"
+                                        >
+                                        <div th:text="${request.getMessage()}" class="accordion-body">
+                                            Pastry pudding cookie toffee bonbon jujubes jujubes powder topping. Jelly beans gummi bears sweet roll
+                                            bonbon muffin liquorice. Wafer lollipop sesame snaps. Brownie macaroon cookie muffin cupcake candy
+                                            caramels tiramisu. Oat cake chocolate cake sweet jelly-o brownie biscuit marzipan. Jujubes donut
+                                            marzipan chocolate bar. Jujubes sugar plum jelly beans tiramisu icing cheesecake.
+                                        </div>
+                                        </div>
                                     </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingMarginTwo">
-                                    <button
-                                        class="accordion-button collapsed btn-gradient-secondary waves-effect waves-float waves-light"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#accordionMarginTwo"
-                                        aria-expanded="false"
-                                        aria-controls="accordionMarginTwo"
-                                    >
-                                    Request Ticket No.24
-                                    </button>
-                                    </h2>
-                                    <div
-                                    id="accordionMarginTwo"
-                                    class="accordion-collapse collapse"
-                                    aria-labelledby="headingMarginTwo"
-                                    data-bs-parent="#accordionMargin"
-                                    >
-                                    <div class="accordion-body">
-                                        Sweet pie candy jelly. Sesame snaps biscuit sugar plum. Sweet roll topping fruitcake. Caramels
-                                        liquorice biscuit ice cream fruitcake cotton candy tart. Donut caramels gingerbread jelly-o
-                                        gingerbread pudding. Gummi bears pastry marshmallow candy canes pie. Pie apple pie carrot cake.
-                                    </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingMarginThree">
-                                    <button
-                                        class="accordion-button collapsed btn-gradient-secondary waves-effect waves-float waves-light"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#accordionMarginTwo"
-                                        aria-expanded="false"
-                                        aria-controls="accordionMarginThere"
-                                    >
-                                    Request Ticket No.24
-                                    </button>
-                                    </h2>
-                                    <div
-                                    id="accordionMarginThere"
-                                    class="accordion-collapse collapse"
-                                    aria-labelledby="headingMarginThere"
-                                    data-bs-parent="#accordionMargin"
-                                    >
-                                    <div class="accordion-body">
-                                        Sweet pie candy jelly. Sesame snaps biscuit sugar plum. Sweet roll topping fruitcake. Caramels
-                                        liquorice biscuit ice cream fruitcake cotton candy tart. Donut caramels gingerbread jelly-o
-                                        gingerbread pudding. Gummi bears pastry marshmallow candy canes pie. Pie apple pie carrot cake.
-                                    </div>
-                                    </div>
-                                </div>
+
                                 </div>
                             </div>
                         </div>
@@ -420,6 +283,9 @@
                  <!--/page icon-->
             </div>
         </div>
+
+
+
     </div>
     <!-- END: Content-->
 
@@ -428,7 +294,7 @@
 
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light">
-        <p class="clearfix mb-0"><span class="float-md-start d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ms-25" href="https://1.envato.market/pixinvent_portfolio" target="_blank">Pixinvent</a><span class="d-none d-sm-inline-block">, All rights Reserved</span></span><span class="float-md-end d-none d-md-block">Hand-crafted & Made with<i data-feather="heart"></i></span></p>
+
     </footer>
     <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
     <!-- END: Footer-->
@@ -447,6 +313,7 @@
     <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
     <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
     <script src="../../../app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js"></script>
+    <script src="/custom-scripts/axios.min.js"></script>
     <!-- END: Page Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
@@ -461,6 +328,29 @@
     <!-- END: Page JS-->
 
     <script>
+
+        async function GetCurrentProjectId() {
+            let projectId = window.document.URL.split('/user/project/')[1].split('/')[0];
+            return projectId;
+        }
+
+        async function SendRequestUpdateAPI(projectId, status) {
+            let res = await axios.post(`/api/v1/pri/user/project/assets/security/approve/${projectId}`, status);
+            return res;
+        }
+
+        async function sendAssetApproval(context, approved) {
+            let projectId = await GetCurrentProjectId();
+            let requestId = context.parentNode.id;
+
+            await SendRequestUpdateAPI(projectId,{
+                requestId: requestId,
+                allowed: approved
+            });
+
+            document.location = '';
+        }
+
         $(window).on('load', function() {
             if (feather) {
                 feather.replace({

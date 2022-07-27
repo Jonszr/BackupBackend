@@ -27,6 +27,17 @@ public class AssetSecurityProfile {
     @OneToOne(mappedBy = "securityProfile")
     private Asset asset;
 
+    @OneToOne(mappedBy = "securityProfile")
+    private AssetFolder assetFolder;
+
+    @OneToMany(mappedBy = "securityProfile", cascade = CascadeType.ALL)
+    private List<AssetSecurityRequest> requests;
+
+    // TODO: Should not have this here, temporary ;)
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     // Security settings
     @Enumerated(EnumType.STRING)
     private AssetSecurityProfileTypeEnum securityType;

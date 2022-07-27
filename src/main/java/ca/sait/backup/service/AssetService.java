@@ -2,11 +2,11 @@ package ca.sait.backup.service;
 
 
 import ca.sait.backup.model.business.JWTSessionContainer;
-import ca.sait.backup.model.entity.Asset;
-import ca.sait.backup.model.entity.AssetFolder;
-import ca.sait.backup.model.entity.Category;
-import ca.sait.backup.model.entity.Project;
+import ca.sait.backup.model.entity.*;
 import ca.sait.backup.model.request.LockAssetRequest;
+import ca.sait.backup.model.request.SecurityAssetRequest;
+import ca.sait.backup.model.request.TryUnlockDataLockerRequest;
+import ca.sait.backup.model.request.UnlockAssetRequest;
 
 import java.util.List;
 
@@ -42,6 +42,8 @@ public interface AssetService {
 
     AssetFolder getAssetFolderFromId(Long assetFolderId) throws Exception;
 
+    Asset getAssetById(Long assetId);
+
     // Assets
     void createAsset(Asset asset);
 
@@ -50,14 +52,22 @@ public interface AssetService {
     void deleteAsset(Asset asset);
 
     // Asset Security
-    void lockAsset(LockAssetRequest lockRequest);
+    void lockAsset(LockAssetRequest lockRequest, Long projectId);
 
     String getSecurityConfig(LockAssetRequest assetInfo);
+
+    boolean createSecurityAssetRequest(JWTSessionContainer sessionContainer, SecurityAssetRequest request);
+
+    boolean tryUnlockAsset(Long projectId, JWTSessionContainer sessionContainer, TryUnlockDataLockerRequest tryUnlock);
+
+    List<AssetSecurityRequest> getAssetRequests(JWTSessionContainer sessionContainer, Long projectId);
+
+    String ui_getAssetRequestTitle(JWTSessionContainer sessionContainer, AssetSecurityRequest securityRequest);
 
     boolean ui_isApprovedMember(JWTSessionContainer sessionContainer, Asset asset);
 
     boolean ui_isApprovedMember(JWTSessionContainer sessionContainer, AssetFolder assetFolder);
 
-    void dev_approveMember(Long userId, Long assetId);
+    void dev_approveMember(Long userId, UnlockAssetRequest unlockRequest);
 
 }

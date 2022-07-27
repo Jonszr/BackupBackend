@@ -2,6 +2,7 @@ package ca.sait.backup.controller.html.user.project;
 
 
 import ca.sait.backup.component.user.CategoryAssociation;
+import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.entity.*;
 import ca.sait.backup.service.AssetService;
 
@@ -94,12 +95,39 @@ public class ProjectController {
     }
 
     @GetMapping("/requests")
-    public String ProjectAssetRequests(Model model, HttpServletRequest request) {
+    public String ProjectAssetRequests(@PathVariable("projectId") Long projectId, Model model, HttpServletRequest request) {
 
         // Expose session variables
         this.sessionService.exposeEssentialVariables(request, model);
 
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        List<AssetSecurityRequest> requests = this.assetService.getAssetRequests(
+            sessionContainer,
+            projectId
+        );
+
+        ArrayList<AssetSecurityRequest> openRequests = new ArrayList<AssetSecurityRequest>();
+        ArrayList<AssetSecurityRequest> closedRequests = new ArrayList<AssetSecurityRequest>();
+
+        for (AssetSecurityRequest req: requests) {
+            if (req.getStatus().equals(AssetRequestStatusEnum.UNSEEN)) {
+                openRequests.add(req);
+            }else {
+                closedRequests.add(req);
+            }
+        }
+
+        model.addAttribute("sessionContainer", sessionContainer);
+        model.addAttribute("assetService", this.assetService);
+        model.addAttribute("openRequests", openRequests);
+        model.addAttribute("closedRequests", closedRequests);
+
         return "/user/project_request.html";
     }
+
+
 
 }

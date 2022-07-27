@@ -76,10 +76,10 @@ public class ProjectControllerRest {
     }
 
     @GetMapping("/files/{folderId}")
-    public JsonData listFilesInsideFolder(@PathVariable("folderId") Integer folderId) throws Exception {
+    public JsonData listFilesInsideFolder(@PathVariable("folderId") Long folderId) throws Exception {
 
         AssetFolder currentFolder = this.assetService.getAssetFolderFromId(
-            (long)folderId
+            folderId
         );
 
         List<Asset> childAssets = currentFolder.getChildAssets();
@@ -135,6 +135,12 @@ public class ProjectControllerRest {
         this.assetService.createAsset(asset);
 
         return JsonData.buildSuccess("");
+    }
+
+    @GetMapping("/assets/{assetId}")
+    public JsonData getAssetContents(@PathVariable("assetId") Long assetId) throws Exception {
+        Asset asset = this.assetService.getAssetById(assetId);
+        return JsonData.buildSuccess(asset.getAssetValue());
     }
 
     @PostMapping("/folders/{projectId}")
@@ -206,11 +212,51 @@ public class ProjectControllerRest {
         return JsonData.buildSuccess(securityConfig);
     }
 
-    @PostMapping("/assets/security/{projectId}")
-    public JsonData lockAsset(@PathVariable("projectId") Integer projectId, @RequestBody LockAssetRequest lockAssetRequest) {
+    @PostMapping("/assets/security/{projectId}/createAssetRequest")
+    public JsonData createAssetRequest(@PathVariable("projectId") Integer projectId, HttpServletRequest request, @RequestBody SecurityAssetRequest securityAssetRequest) {
+
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        this.assetService.createSecurityAssetRequest(
+            sessionContainer,
+            securityAssetRequest
+        );
+
+        return JsonData.buildSuccess("");
+    }
+
+    @PostMapping("/assets/security/approve/{projectId}")
+    public JsonData unlockAsset(@PathVariable("projectId") Long projectId, @RequestBody UnlockAssetRequest unlockAssetRequest) {
+        this.assetService.dev_approveMember(
+            projectId,
+            unlockAssetRequest
+        );
+        return JsonData.buildSuccess("");
+    }
+
+    @PostMapping("/assets/security/tryunlock/{projectId}")
+    public JsonData tryUnlockAsset(@PathVariable("projectId") Long projectId, HttpServletRequest request, @RequestBody TryUnlockDataLockerRequest unlockAssetRequest) {
+        JWTSessionContainer jwtSessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        boolean isSuccess = this.assetService.tryUnlockAsset(
+            projectId,
+            jwtSessionContainer,
+            unlockAssetRequest
+        );
+
+        return JsonData.buildSuccess(isSuccess ? "true" : "false");
+    }
+
+    @PostMapping("/assets/security/lock/{projectId}")
+    public JsonData lockAsset(@PathVariable("projectId") Long projectId, @RequestBody LockAssetRequest lockAssetRequest) {
 
         this.assetService.lockAsset(
-            lockAssetRequest
+            lockAssetRequest,
+            projectId
         );
 
         return JsonData.buildSuccess("");
