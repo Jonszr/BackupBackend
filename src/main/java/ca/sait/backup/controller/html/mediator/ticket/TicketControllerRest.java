@@ -1,5 +1,6 @@
 package ca.sait.backup.controller.html.mediator.ticket;
 
+import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.entity.SupportTicket;
 import ca.sait.backup.model.entity.SupportTicketChat;
 import ca.sait.backup.model.entity.SupportTicketStatusEnum;
@@ -8,6 +9,7 @@ import ca.sait.backup.model.request.CreateNewSupportTicketRequest;
 import ca.sait.backup.model.request.CreateSupportTicketReplyRequest;
 import ca.sait.backup.model.request.GetAllSupportTicketsForStatusRequest;
 import ca.sait.backup.model.request.ModifyTicketRequest;
+import ca.sait.backup.service.SessionService;
 import ca.sait.backup.service.SupportTicketService;
 import ca.sait.backup.service.UserService;
 import ca.sait.backup.utils.JsonData;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,6 +32,9 @@ public class TicketControllerRest {
 
     @Autowired
     private SupportTicketService ticketService;
+
+    @Autowired
+    private SessionService sessionService;
 
     @PostMapping("/create")
     public JsonData createNewTicket(@RequestBody CreateNewSupportTicketRequest createRequest) {
@@ -87,21 +93,24 @@ public class TicketControllerRest {
     }
 
     @PostMapping("/createMessage")
-    public JsonData changeTicketStatus(@RequestBody CreateSupportTicketReplyRequest msgReq) {
+    public JsonData changeTicketStatus(@RequestBody CreateSupportTicketReplyRequest msgReq, HttpServletRequest request) {
 
         SupportTicket ticket = this.ticketService.mediator_GetTicketById(
             msgReq.getSupportTicketId()
         );
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
+        User user = this.userService.dev_GetUserById(
+            sessionContainer.getUserId()
+        );
 
         SupportTicketChat message = this.ticketService.addNewMessage(
-            ticket.getComplainant(), // Hardcoding this until we have proper session management
+            user,
             msgReq
         );
 
-        System.out.println("Message added to the ticket");
-
         return JsonData.buildSuccess("");
-
     }
 
 

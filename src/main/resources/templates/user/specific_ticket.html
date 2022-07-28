@@ -23,6 +23,8 @@
     <link rel="stylesheet" type="text/css" href="/../../app-assets/vendors/css/extensions/toastr.min.css">
     <link rel="stylesheet" type="text/css" href="/../../app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="/../../app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href="/../../app-assets/vendors/css/extensions/jquery.rateyo.min.css">
+    <link rel="stylesheet" type="text/css" href="/../../app-assets/css/plugins/extensions/ext-component-ratings.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -384,6 +386,41 @@
 
             </div>
         </div>
+
+        <div
+                class="modal fade text-start"
+                id="inlineForm"
+                tabindex="-1"
+                aria-labelledby="myModalLabel33"
+                aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel33">Leave Feedback on Support</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="#">
+                        <div class="modal-body">
+                            <label>Rating: </label>
+                            <div class="mb-1">
+                                <div id="supportRating"></div>
+                            </div>
+
+                            <label>Message: </label>
+                            <div class="mb-1">
+                                <textarea class="form-control" id="supportFeedbackInput" placeholder="Did we do good? If not, how can we do better!"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="submitRating()" data-bs-dismiss="modal">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
     <!-- END: Content-->
 
@@ -409,6 +446,7 @@
     <script src="/../../app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
     <script src="/../../app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
     <script src="/../../app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js"></script>
+    <script src="/../../app-assets/vendors/js/extensions/jquery.rateyo.min.js"></script>
     <!-- END: Page Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
@@ -424,12 +462,16 @@
 
     <script>
         $(window).on('load', function() {
+
             if (feather) {
                 feather.replace({
                     width: 14,
                     height: 14
                 });
             }
+
+            handleStartup();
+
         })
 
         function addMessages() {
@@ -463,6 +505,52 @@
                 newStatus: status
             });
             refreshPage();
+        }
+
+        async function checkShouldPopReview() {
+            let ticketId = await this.GetCurrentTicketId();
+            let res = await axios.post(`/api/v1/pri/user/ticket/checkFeedbackPending`, {
+                ticketId: ticketId,
+                newStatus: false // Ignore this
+            });
+            return res;
+        }
+
+        async function SendTicketRating(jsn) {
+            let res = await axios.post(`/api/v1/pri/user/ticket/leaveFeedback`, jsn);
+            return res;
+        }
+
+        async function handleStartup() {
+
+            console.log("Dom is ready");
+            $('#supportRating').rateYo({
+                rating: 2.5,
+                halfStar: true
+            })
+
+            let shouldAskReview = (await checkShouldPopReview()).data.msg;
+
+            console.log("Should ask review", shouldAskReview);
+
+            if (shouldAskReview == "true") {
+                bootstrap.Modal.getOrCreateInstance(document.querySelector('#inlineForm')).show();
+            }
+
+        }
+
+        async function submitRating(){
+
+            let ticketId = await this.GetCurrentTicketId();
+            let ratingFeedback = document.querySelector('#supportFeedbackInput').value;
+            let rating = $('#supportRating').rateYo("rating");
+
+            let res = await SendTicketRating({
+                ticketId: ticketId,
+                ticketRating: rating,
+                message: ratingFeedback
+            });
+
         }
 
         async function sendMessage() {

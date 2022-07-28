@@ -68,8 +68,6 @@
         <div class="content-wrapper container-xxl p-0">
             <div class="content-header row">
 
-
-
             </div>
             <div class="content-body">
                 <!-- Request model start -->
@@ -77,6 +75,7 @@
 
                     <div class="row match-height d-flex justify-content-center">
                     </div>
+
                     <!-- ongoing ticket -->
                     <div class="row">
                         <!-- <div class="d-flex justify-content-between"><h2 class="fw-bolder">Project 1</h2></div> -->
@@ -110,7 +109,7 @@
                                 <h4 class="card-title">Request Ticket</h4>
                                 <span class="badge badge-glow bg-info">Ongoing</span>
                                 </div>
-                                    <div class="card-body">
+                                    <div class="card-body" style="overflow: auto; height: 45vh;">
                                         <div th:each="request: ${openRequests}" class="accordion accordion-margin" id="accordionMargin">
 
                                             <div class="accordion-item">
@@ -160,7 +159,7 @@
                             <h4 class="card-title">History</h4>
                             <span class="badge badge-glow bg-secondary">Closed</span>
                           </div>
-                            <div class="card-body">
+                            <div class="card-body" style="overflow: auto; height: 45vh;">
                                     <div class="accordion accordion-margin" id="accordionMargin">
                                     <div th:each="request: ${closedRequests}"  class="accordion-item">
                                         <h2 class="accordion-header" id="headingMarginOne">

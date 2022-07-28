@@ -88,7 +88,10 @@ public class UserController {
             registerRequest.getEmail(),
             registerRequest.getPassword(),
             registerRequest.getName(),
-            registerRequest.getPhone()
+            registerRequest.getPhone(),
+            registerRequest.getCompany(),
+            registerRequest.getAddress(),
+            registerRequest.getCountry()
         );
 
         rResponse.setCreationStatus(created);

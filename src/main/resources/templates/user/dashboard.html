@@ -257,7 +257,7 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-6">
-                        <h4 class="fw-bolder mt-0 mb-1"  style="text-align: right;"><a href="./project/overview">View All >>></a></h4>
+                        <h4 class="fw-bolder mt-0 mb-1"  style="text-align: right;"><a href="/user/project/overview">View All >>></a></h4>
                     </div>
 
                 </div>
@@ -272,6 +272,33 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- BEGIN: Check no projects -->
+
+                <th th:if="${projectGrid.size() == 0}">
+
+                    <div class="row">
+
+                        <div class="col-lg-12 col-md-12 col-12">
+
+                            <div  style="margin-top: 1em;" class="card text-center shadow-none bg-transparent border-info col-12">
+
+                                <div class="card-body">
+                                    <h4 class="card-title" style="margin-bottom: 0.5em;">Create a new Project</h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-plus" style="width: 50px; height: 50px; margin-bottom: 1em;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                                    <p class="card-text">You're not a member of any projects, either create one or wait for a project invitation.</p>
+                                    <button type="button" onclick="document.location ='/user/project/overview'" class="btn btn-gradient-info waves-effect">Go to Project Overview</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </th>
+                <!-- END: Check no projects -->
 
                 <!-- BEGIN: Project Insertion (Rows) -->
                 <div th:each="projectRow : ${projectGrid}" class="row mt-1">

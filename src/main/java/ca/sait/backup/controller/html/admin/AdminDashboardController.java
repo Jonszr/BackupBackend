@@ -2,9 +2,11 @@ package ca.sait.backup.controller.html.admin;
 
 
 import ca.sait.backup.model.business.JWTSessionContainer;
+import ca.sait.backup.model.entity.Project;
 import ca.sait.backup.model.entity.SupportTicket;
 import ca.sait.backup.model.entity.User;
 import ca.sait.backup.model.entity.UserRole;
+import ca.sait.backup.service.ProjectService;
 import ca.sait.backup.service.SessionService;
 import ca.sait.backup.service.SupportTicketService;
 import ca.sait.backup.service.UserService;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -34,6 +37,9 @@ public class AdminDashboardController {
     @Autowired
     private SupportTicketService supportTicketService;
 
+    @Autowired
+    private ProjectService projectService;
+
     @GetMapping("/")
     public String GetDashboard(Model model, HttpServletRequest request) {
 
@@ -42,7 +48,24 @@ public class AdminDashboardController {
         );
 
 
+        // Get all project managers
+        List<Project> projectList = this.projectService.dev_getAllProjects();
+        List<User> projectOwnerList = projectList.stream().map( (Project project) -> {
+            return project.getUser();
+        }).collect(Collectors.toList());
+
+        // Get all users by type
         ArrayList<User> allUsers = new ArrayList<User>();
+
+        List<User> mediatorList = this.userService.dev_GetUsersByRole(
+            UserRole.MEDIATOR
+        );
+        List<User> adminList = this.userService.dev_GetUsersByRole(
+            UserRole.ADMIN
+        );
+        List<User> userList = this.userService.dev_GetUsersByRole(
+            UserRole.USER
+        );
 
         for (UserRole role: UserRole.values()) {
             List<User> users = this.userService.dev_GetUsersByRole(
@@ -53,6 +76,19 @@ public class AdminDashboardController {
             model.addAttribute(attrName, users);
         }
 
+        List<User> suspendedUser = allUsers.stream().filter( (User user) -> {
+           if (user.isDisabled()) {
+               return true;
+           }else {
+               return false;
+           }
+        }).collect(Collectors.toList());
+
+        model.addAttribute("admin_list", adminList);
+        model.addAttribute("user_list", userList);
+        model.addAttribute("suspended_list", userList);
+        model.addAttribute("manager_list", projectOwnerList);
+        model.addAttribute("mediator_list", mediatorList);
         model.addAttribute("allUsers_list", allUsers);
 
         return ("/admin/admin_dashboard");

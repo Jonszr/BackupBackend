@@ -46,6 +46,7 @@
 
   <!-- BEGIN: Body-->
   <body class="vertical-layout vertical-menu-modern  navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="">
+
     <!-- BEGIN: Header-->
     <div th:replace="fragment/top-nav-bar.html
             :: notification(sessionContainer = ${sessionContainer}, userNotifications = ${userNotifications})">
@@ -54,9 +55,24 @@
 
 
     <!-- BEGIN: Main Menu-->
-    <div th:replace="fragment/user-left-nav.html
+    <div th:if="${sessionContainer.getUserRole().toString().equals('USER')}">
+        <div th:replace="fragment/user-left-nav.html
             :: leftNav(sessionContainer = ${sessionContainer})">
+        </div>
     </div>
+
+    <div th:if="${sessionContainer.getUserRole().toString().equals('MEDIATOR')}">
+        <div th:replace="fragment/mediator-left-nav.html
+            :: leftNav(sessionContainer = ${sessionContainer})">
+        </div>
+    </div>
+
+    <div th:if="${sessionContainer.getUserRole().toString().equals('ADMIN')}">
+        <div th:replace="fragment/admin-left-nav.html
+            :: leftNav(sessionContainer = ${sessionContainer})">
+        </div>
+    </div>
+
     <!-- END: Main Menu-->
 
     <!-- BEGIN: Content-->
@@ -71,8 +87,19 @@
                 <h2 class="content-header-title float-start mb-0">Delete Account</h2>
                 <div class="breadcrumb-wrapper">
                   <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/user/dashboard">Home</a>
-                    </li>
+
+                      <li th:if="${sessionContainer.getUserRole().toString().equals('MEDIATOR')}" class="breadcrumb-item">
+                          <a href="/mediator/dashboard/">Home</a>
+                      </li>
+
+                      <li th:if="${sessionContainer.getUserRole().toString().equals('USER')}" class="breadcrumb-item">
+                          <a href="/user/dashboard/">Home</a>
+                      </li>
+
+                      <li th:if="${sessionContainer.getUserRole().toString().equals('ADMIN')}" class="breadcrumb-item">
+                          <a href="/admin/">Home</a>
+                      </li>
+
                     <li class="breadcrumb-item"><a href="#">Settings </a>
                     </li>
                     <li class="breadcrumb-item active"> Delete Account
@@ -131,7 +158,7 @@
           </div>
         </div>
 
-        <form id="formAccountDeactivation" class="validate-form" onsubmit="return false">
+        <form id="formAccountDeactivation" class="validate-form" onsubmit="TriggerDisable()">
           <div class="form-check">
             <input
               class="form-check-input"
@@ -178,6 +205,7 @@
     <!-- BEGIN: Theme JS-->
     <script src="../../../app-assets/js/core/app-menu.min.js"></script>
     <script src="../../../app-assets/js/core/app.min.js"></script>
+    <script src="/custom-scripts/axios.min.js"></script>
     <script src="../../../app-assets/js/scripts/customizer.min.js"></script>
     <!-- END: Theme JS-->
 
@@ -191,6 +219,35 @@
           feather.replace({ width: 14, height: 14 });
         }
       })
+
+     async function DisableAccount(jsn) {
+        console.log("Sending", jsn);
+        let res = await axios.post('/api/v1/pri/general/settings/delete', {});
+        return res;
+     }
+
+     async function TriggerDisable() {
+
+        let i = 0;
+        while(window.deactivationStatus == null && i++ < 60) {
+            await new Promise(r => setTimeout(r, 1000));
+        }
+
+        if (window.deactivationStatus == null) {
+            return;
+        }
+
+        if (window.deactivationStatus) {
+            window.deactivationStatus = false;
+            await DisableAccount({});
+            document.location = '/general/logout';
+        }else {
+            window.deactivationStatus = null;
+        }
+
+     }
+
+
     </script>
   </body>
   <!-- END: Body-->

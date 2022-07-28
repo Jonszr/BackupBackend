@@ -31,10 +31,13 @@ public class User {
     private String password;
     private String email;
     private String phone;
+    private String address;
+    private String company;
+    private String country;
 
     private boolean disabled;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @CreationTimestamp

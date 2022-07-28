@@ -74,10 +74,11 @@ $(function () {
 
   // Alert With Functional Confirm Button
   if (deactivateButton) {
+      console.log("Clicked on");
     deactivateButton.onclick = function () {
       if (accountActivation.checked == true) {
         Swal.fire({
-          text: 'Are you sure you would like to deactivate your account?',
+          text: 'Are you sure you would like to deactivate your account????',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonText: 'Yes',

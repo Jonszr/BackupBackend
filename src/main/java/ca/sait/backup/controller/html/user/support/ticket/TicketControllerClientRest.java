@@ -5,10 +5,7 @@ import ca.sait.backup.model.entity.SupportTicket;
 import ca.sait.backup.model.entity.SupportTicketChat;
 import ca.sait.backup.model.entity.SupportTicketStatusEnum;
 import ca.sait.backup.model.entity.User;
-import ca.sait.backup.model.request.CreateNewSupportTicketRequest;
-import ca.sait.backup.model.request.CreateSupportTicketReplyRequest;
-import ca.sait.backup.model.request.GetAllSupportTicketsForStatusRequest;
-import ca.sait.backup.model.request.ModifyTicketRequest;
+import ca.sait.backup.model.request.*;
 import ca.sait.backup.service.SessionService;
 import ca.sait.backup.service.SupportTicketService;
 import ca.sait.backup.service.UserService;
@@ -99,6 +96,52 @@ public class TicketControllerClientRest {
 
         return JsonData.buildSuccess("");
 
+    }
+
+    @PostMapping("/checkFeedbackPending")
+    public JsonData checkReviewPending(@RequestBody ModifyTicketRequest modReq, HttpServletRequest request) {
+
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        // Get ticket information
+        User user = this.userService.dev_GetUserById(
+            sessionContainer.getUserId()
+        );
+
+        SupportTicket supportTicket = this.ticketService.mediator_GetTicketById(
+            modReq.getTicketId()
+        );
+
+        // Check if the ticket is not resolved yet
+        boolean isResolved = supportTicket.getStatus().equals(SupportTicketStatusEnum.CLOSED);
+        if (!isResolved) {
+            return JsonData.buildSuccess("false");
+        }
+
+        // Check if the current user is the owner of the ticket
+        boolean isComplainant = supportTicket.getComplainant().getId().equals(user.getId());
+        if (!isComplainant) {
+            return JsonData.buildSuccess("false");
+        }
+
+        // If it is, check to see if they haven't left feedback already.
+        if (supportTicket.getUserRating() == 0 && supportTicket.getUserFeedback() == null) {
+            return JsonData.buildSuccess("true");
+        }
+
+        // They have already left feedback, so return true
+        return JsonData.buildSuccess("false");
+
+    }
+
+    @PostMapping("/leaveFeedback")
+    public JsonData leaveFeedback(@RequestBody SupportTicketFeedbackRequest msgReq, HttpServletRequest request) {
+        this.ticketService.saveSupportTicketFeedback(
+            msgReq
+        );
+        return JsonData.buildSuccess("");
     }
 
 

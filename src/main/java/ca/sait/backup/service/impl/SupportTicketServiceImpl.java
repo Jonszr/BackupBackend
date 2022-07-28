@@ -8,6 +8,7 @@ import ca.sait.backup.model.entity.SupportTicketStatusEnum;
 import ca.sait.backup.model.entity.User;
 import ca.sait.backup.model.request.CreateNewSupportTicketRequest;
 import ca.sait.backup.model.request.CreateSupportTicketReplyRequest;
+import ca.sait.backup.model.request.SupportTicketFeedbackRequest;
 import ca.sait.backup.service.SupportTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,24 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         );
 
         return tickets;
+    }
+    @Override
+    public void saveSupportTicketFeedback(SupportTicketFeedbackRequest feedback) {
+
+        SupportTicket ticket = this.ticketRepository.findOneById(
+            feedback.getTicketId()
+        );
+        ticket.setUserRating(
+            feedback.getTicketRating()
+        );
+        ticket.setUserFeedback(
+            feedback.getMessage()
+        );
+
+        this.ticketRepository.save(
+            ticket
+        );
+
     }
 
     @Override

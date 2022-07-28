@@ -38,6 +38,9 @@ public class SupportTicket {
     private SupportTicketStatusEnum status;
 
     // General Information
+    private double userRating;
+    private String userFeedback;
+
     private String title;
     private String description;
 
