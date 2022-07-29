@@ -39,6 +39,12 @@ public class UserServiceImpl implements UserService {
 
         // Compare both hashes
         if (user.getPassword().equals(hashProvidedPassword)) {
+
+            // Check if user is disabled
+            if (user.isDisabled()) {
+                return false;
+            }
+
             // Valid
             return true;
         }

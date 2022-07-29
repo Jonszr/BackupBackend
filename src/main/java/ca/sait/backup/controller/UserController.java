@@ -67,7 +67,7 @@ public class UserController {
             // Create cookie using JWT token
             Cookie cookie = new Cookie("session", jwtToken);
 
-            cookie.setSecure(true);
+            cookie.setSecure(false);
             cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
             cookie.setPath("/");
 
