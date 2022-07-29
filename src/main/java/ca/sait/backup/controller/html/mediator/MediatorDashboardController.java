@@ -122,7 +122,9 @@ public class MediatorDashboardController {
             averageRating = 5.0;
         }
 
-        model.addAttribute("mediatorRatingAvg", averageRating);
+        String formattedRating = String.format("%.2f", averageRating);
+
+        model.addAttribute("mediatorRatingAvg", formattedRating);
         model.addAttribute("numTickets", numTickets);
         model.addAttribute("numUsers", numUsers);
         model.addAttribute("ticketsWithFeedback", ticketsWithFeedback);
