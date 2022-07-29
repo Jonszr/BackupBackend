@@ -53,20 +53,15 @@ public class JWTUtils {
      * @param user
      * @return
      */
-    public static String geneJsonWebToken(){
+    public static String geneJsonWebToken(String sessionData){
 
-//        String token = Jwts.builder().setSubject(SUBJECT)
-//                .claim("head_img",user.getHeadImg())
-//                .claim("id",user.getId())
-//                .claim("name",user.getName())
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
-//                .signWith(SignatureAlgorithm.HS256,SECRET).compact();
+        String token = Jwts.builder().setSubject(SUBJECT)
+                .claim("sessionData", sessionData)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
+                .signWith(SignatureAlgorithm.HS256,SECRET).compact();
 
-//        token = TOKEN_PREFIX + token;
-
-
-        String token = "dummy";
+        token = TOKEN_PREFIX + token;
 
         return token;
     }
@@ -81,7 +76,7 @@ public class JWTUtils {
 
         try{
 
-            final  Claims claims = Jwts.parser().setSigningKey(SECRET)
+            final Claims claims = Jwts.parser().setSigningKey(SECRET)
                     .parseClaimsJws(token.replace(TOKEN_PREFIX,"")).getBody();
 
             return claims;

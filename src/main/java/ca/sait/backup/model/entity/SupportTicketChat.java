@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class SupportTicketChat {
     @JoinColumn(name = "user_id")
     private User from;
 
-    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
     private Date creationDate;
     private String message;
 }

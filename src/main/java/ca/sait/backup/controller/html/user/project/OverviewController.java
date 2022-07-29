@@ -1,7 +1,9 @@
 package ca.sait.backup.controller.html.user.project;
 
+import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.business.RowContainer;
 import ca.sait.backup.model.entity.Project;
+import ca.sait.backup.service.SessionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ca.sait.backup.service.ProjectService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -20,11 +23,23 @@ public class OverviewController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @GetMapping("/overview")
-    public String overview(Model model) {
+    public String overview(Model model, HttpServletRequest request) {
+
+        // Expose session variables
+        this.sessionService.exposeEssentialVariables(request, model);
+
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
 
         // Get list of projects from Project Service.
-        List<Project> projectList = this.projectService.getAllProjects();
+        List<Project> projectList = this.projectService.getAllProjects(
+            sessionContainer
+        );
 
         // Process project list into a grid format.
         RowContainer<Project> gridContainer = new RowContainer<>(projectList, 3);

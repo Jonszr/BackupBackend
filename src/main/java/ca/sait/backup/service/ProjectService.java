@@ -1,14 +1,13 @@
 package ca.sait.backup.service;
 
+import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.entity.Project;
 import ca.sait.backup.model.entity.User;
 import ca.sait.backup.model.request.CreateNewProjectRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Experimentation purposes - Ibrahim
- */
 
 public interface ProjectService {
 
@@ -16,5 +15,8 @@ public interface ProjectService {
 
     Project getProjectUsingId(Long projectId);
 
-    List<Project> getAllProjects();
+    ArrayList<Project> getAllProjects(JWTSessionContainer sessionContainer);
+
+    List<Project> dev_getAllProjects();
+
 }

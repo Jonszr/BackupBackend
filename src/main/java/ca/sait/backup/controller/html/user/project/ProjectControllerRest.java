@@ -1,14 +1,14 @@
 package ca.sait.backup.controller.html.user.project;
 
+import ca.sait.backup.model.business.JWTSessionContainer;
 import ca.sait.backup.model.entity.Asset;
 import ca.sait.backup.model.entity.AssetFolder;
 import ca.sait.backup.model.entity.Category;
 import ca.sait.backup.model.entity.Project;
-import ca.sait.backup.model.request.AssetRequest;
-import ca.sait.backup.model.request.CategoryRequest;
-import ca.sait.backup.model.request.FolderRequest;
+import ca.sait.backup.model.request.*;
 import ca.sait.backup.service.AssetService;
 import ca.sait.backup.service.ProjectService;
+import ca.sait.backup.service.SessionService;
 import ca.sait.backup.utils.JsonData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * Usage: Asset Exploration
  */
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -33,6 +34,24 @@ public class ProjectControllerRest {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private SessionService sessionService;
+
+    @PostMapping("/create")
+    public JsonData createNewProject(@RequestBody CreateNewProjectRequest projReq, HttpServletRequest request) throws Exception {
+
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        this.projectService.createNewProject(
+            sessionContainer.getUserId(),
+            projReq
+        );
+
+        return JsonData.buildSuccess("");
+    }
 
     @GetMapping("/folders/{folderId}")
     public JsonData listFoldersInsideFolder(@PathVariable("folderId") Integer folderId) throws Exception {
@@ -57,10 +76,10 @@ public class ProjectControllerRest {
     }
 
     @GetMapping("/files/{folderId}")
-    public JsonData listFilesInsideFolder(@PathVariable("folderId") Integer folderId) throws Exception {
+    public JsonData listFilesInsideFolder(@PathVariable("folderId") Long folderId) throws Exception {
 
         AssetFolder currentFolder = this.assetService.getAssetFolderFromId(
-            (long)folderId
+            folderId
         );
 
         List<Asset> childAssets = currentFolder.getChildAssets();
@@ -118,6 +137,12 @@ public class ProjectControllerRest {
         return JsonData.buildSuccess("");
     }
 
+    @GetMapping("/assets/{assetId}")
+    public JsonData getAssetContents(@PathVariable("assetId") Long assetId) throws Exception {
+        Asset asset = this.assetService.getAssetById(assetId);
+        return JsonData.buildSuccess(asset.getAssetValue());
+    }
+
     @PostMapping("/folders/{projectId}")
     public JsonData createNewFolder(@PathVariable("projectId") Long projectId, @RequestBody FolderRequest folderRequest) throws Exception {
 
@@ -173,6 +198,66 @@ public class ProjectControllerRest {
         category.setDescription(categoryRequest.getDescription());
 
         this.assetService.createCategory(category);
+
+        return JsonData.buildSuccess("");
+    }
+
+    @PostMapping("/assets/security/{projectId}/getSecurityConfig")
+    public JsonData getSecConfig(@PathVariable("projectId") Integer projectId, @RequestBody LockAssetRequest lockAssetRequest) {
+
+        String securityConfig = this.assetService.getSecurityConfig(
+            lockAssetRequest
+        );
+
+        return JsonData.buildSuccess(securityConfig);
+    }
+
+    @PostMapping("/assets/security/{projectId}/createAssetRequest")
+    public JsonData createAssetRequest(@PathVariable("projectId") Integer projectId, HttpServletRequest request, @RequestBody SecurityAssetRequest securityAssetRequest) {
+
+        JWTSessionContainer sessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        this.assetService.createSecurityAssetRequest(
+            sessionContainer,
+            securityAssetRequest
+        );
+
+        return JsonData.buildSuccess("");
+    }
+
+    @PostMapping("/assets/security/approve/{projectId}")
+    public JsonData unlockAsset(@PathVariable("projectId") Long projectId, @RequestBody UnlockAssetRequest unlockAssetRequest) {
+        this.assetService.dev_approveMember(
+            projectId,
+            unlockAssetRequest
+        );
+        return JsonData.buildSuccess("");
+    }
+
+    @PostMapping("/assets/security/tryunlock/{projectId}")
+    public JsonData tryUnlockAsset(@PathVariable("projectId") Long projectId, HttpServletRequest request, @RequestBody TryUnlockDataLockerRequest unlockAssetRequest) {
+        JWTSessionContainer jwtSessionContainer = this.sessionService.extractSession(
+            request
+        );
+
+        boolean isSuccess = this.assetService.tryUnlockAsset(
+            projectId,
+            jwtSessionContainer,
+            unlockAssetRequest
+        );
+
+        return JsonData.buildSuccess(isSuccess ? "true" : "false");
+    }
+
+    @PostMapping("/assets/security/lock/{projectId}")
+    public JsonData lockAsset(@PathVariable("projectId") Long projectId, @RequestBody LockAssetRequest lockAssetRequest) {
+
+        this.assetService.lockAsset(
+            lockAssetRequest,
+            projectId
+        );
 
         return JsonData.buildSuccess("");
     }

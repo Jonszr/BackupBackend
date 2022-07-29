@@ -12,6 +12,12 @@ class FileExplorer {
     assetStorage = []; // Stores all assets in JSON format.
     folderStorage = []; // Stores all folders in JSON format.
 
+    lockAssetContext = false;
+
+    assetModal = false;
+    folderModal = false;
+    assetModal = false;
+
     async GetCurrentProjectId() {
         let projectId = window.document.URL.split('/user/project/')[1].split('/')[0];
         return projectId;
@@ -40,6 +46,35 @@ class FileExplorer {
     async CreateNewFolderAPI(jsn) {
         let projectId = await this.GetCurrentProjectId();
         let res = await axios.post(`/api/v1/pri/user/project/folders/${projectId}`, jsn);
+    }
+
+    async GetSecurityConfigAPI(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/assets/security/${projectId}/getSecurityConfig`, jsn);
+        return res;
+    }
+
+    async LockAsset(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/assets/security/lock/${projectId}`, jsn);
+        return res;
+    }
+
+    async TryUnlockAsset(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/assets/security/tryunlock/${projectId}`, jsn);
+        return res;
+    }
+
+    async CreateAssetRequest(jsn) {
+        let projectId = await this.GetCurrentProjectId();
+        let res = await axios.post(`/api/v1/pri/user/project/assets/security/${projectId}/createAssetRequest`, jsn);
+        return res;
+    }
+
+    async GetAssetContents(assetId) {
+        let res = await axios.get(`/api/v1/pri/user/project/assets/${assetId}`);
+        return res;
     }
 
     // Asset
@@ -74,9 +109,79 @@ class FileExplorer {
         await this.CreateNewAssetAPI(jsn);
         this.UnblockElement('#open-asset-modal .modal-content');
 
+        document.location = '';
+
         return 0;
     }
 
+    async CreateAssetLocker(context) {
+
+        // Grab context and ensure no repetitive behavior
+        if (context != null && this.lockAssetContext != null) {
+            this.lockAssetContext = null;
+        }
+
+        if (!this.lockAssetContext) {
+            for (let i = 0; i < 4; i++) {
+                context = context.parentNode;
+            }
+            this.lockAssetContext = context.id;
+            return 0;
+        }
+
+        // Reset context for future
+        let contextCopy = this.lockAssetContext;
+        this.lockAssetContext = false;
+
+        // Get selected item from modal
+        let isPassword = document.querySelector('#twoFactorAuthModal')
+                         .querySelector('input:checked').id == 'twoFactorAuthApps';
+
+        let [assetType, assetId] = contextCopy.split('-');
+
+        if (isPassword) {
+
+            const { value: password } = await Swal.fire({
+              title: 'Configure Password',
+              icon: 'info',
+              input: 'text',
+              inputLabel: 'Password',
+              inputPlaceholder: 'Enter your password',
+              inputAttributes: {
+                maxlength: 10,
+                autocapitalize: 'off',
+                autocorrect: 'off'
+              }
+            });
+
+            await this.LockAsset({
+                assetId,
+                assetType,
+                lockType: 'PASSWORD',
+                lockConfiguration: JSON.stringify({
+                    password
+                })
+            });
+
+        }else {
+
+            await this.LockAsset({
+                assetId,
+                assetType,
+                lockType: 'REQUEST',
+                lockConfiguration: JSON.stringify({})
+            });
+
+        }
+
+        await Swal.fire({
+          title: 'Successfully Locked Asset!',
+          icon: 'success',
+        });
+
+        document.location = '';
+
+    }
 
     async SaveAsset(asset) {
         return 0;
@@ -132,6 +237,8 @@ class FileExplorer {
         await this.CreateNewCategoryAPI(jsn);
         this.UnblockElement('#new-category-modal .modal-content');
 
+        document.location = '';
+
         return 0;
     }
 
@@ -162,6 +269,8 @@ class FileExplorer {
 
         await this.CreateNewFolderAPI(jsn);
         this.UnblockElement('#new-folder-modal .modal-content');
+
+        document.location = '';
 
         return 0;
     }
@@ -238,7 +347,229 @@ class FileExplorer {
 
     }
 
+
+    async sec_PasswordProtected() {
+        const { value: password } = await Swal.fire({
+          title: 'Asset Protected',
+          icon: 'error',
+          input: 'password',
+          inputLabel: 'Password',
+          inputPlaceholder: 'Enter your password',
+          inputAttributes: {
+            maxlength: 10,
+            autocapitalize: 'off',
+            autocorrect: 'off'
+          }
+        })
+        return password;
+    }
+
+    async sec_RequestExclusive() {
+        const { value: message } = await Swal.fire({
+          title: 'Request Access',
+          icon: 'error',
+          input: 'text',
+          inputLabel: 'Message',
+          inputPlaceholder: 'I would like access to this asset please',
+          inputAttributes: {
+            maxlength: 100,
+            autocapitalize: 'off',
+            autocorrect: 'off'
+          }
+        });
+        return message;
+    }
+
+    async sec_UnlockStatus(success, customMessage = "") {
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+
+        if (success) {
+            Toast.fire({
+                  icon: 'success',
+                  title: 'Asset Unlocked!'
+            });
+        }else if (customMessage.length > 0) {
+            Toast.fire({
+                  icon: 'info',
+                  title: customMessage
+            });
+        }else if(customMessage.length == 0) {
+            Toast.fire({
+                  icon: 'error',
+                  title: 'Invalid Password'
+            });
+        }
+
+    }
+
+    async HandleSecurity(context) {
+
+        let isProtected = context.querySelector('#asset-locked') != null;
+
+        console.log(isProtected);
+
+        if (isProtected) {
+
+            // Lock asset card
+            let [type, assetId] = context.id.split('-');
+
+            this.BlockElement(`#${context.id}`);
+            let res = await this.GetSecurityConfigAPI({
+                "assetId": assetId,
+                "assetType": type,
+                "lockType": "",
+                "lockConfiguration": ""
+            });
+            this.UnblockElement(`#${context.id}`);
+
+            let config = JSON.parse(res.data.msg);
+
+            if (config.type == "password") {
+
+                let password = await this.sec_PasswordProtected();
+
+                this.BlockElement(`#${context.id}`);
+                let res = await this.TryUnlockAsset(
+                    {
+                        assetId: assetId,
+                        assetType: type,
+                        password: password
+                    }
+                );
+                this.UnblockElement(`#${context.id}`);
+
+                console.log("RESPONSE", res);
+
+                if (res.data.msg == "true") {
+                    await this.sec_UnlockStatus(true);
+                    return true;
+                }else {
+                    await this.sec_UnlockStatus(false);
+                    return false;
+                }
+
+            }else if(config.type == "time-release") {
+                // Not implemented
+            }else if (config.type == "request-exclusive") {
+                let message = await this.sec_RequestExclusive();
+
+                this.BlockElement(`#${context.id}`);
+                let res = await this.CreateAssetRequest({
+                    assetId: assetId,
+                    assetType: type,
+                    message: message
+                });
+                this.UnblockElement(`#${context.id}`);
+
+                await this.sec_UnlockStatus(false, "Your request has been submitted, wait for a response.");
+                return false;
+
+            }
+
+            // Get security configuration
+            await this.sec_UnlockStatus(false);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    async TriggerNewItem() {
+        bootstrap.Modal.getOrCreateInstance(document.querySelector('#createNewModal')).show();
+    }
+
+    async NewItem(context) {
+
+        console.log("New item triggered");
+
+        if (!this.assetModal) {
+            this.folderModal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#new-folder-modal'));
+            this.assetModal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#open-asset-modal'));
+        }
+
+        // Get selected item from modal
+        let isFolder = document.querySelector('#createNewModal')
+                         .querySelector('input:checked').id == 'createNewModalApps';
+
+        if (isFolder) {
+            this.folderModal.show();
+        }else {
+            this.assetModal.show();
+        }
+
+    }
+
+    async ClearAssetModal() {
+        console.log("Clearing asset modal");
+
+        let asset = document.querySelector('#open-asset-modal');
+
+        asset.querySelector('#urlInput').value = "";
+        asset.querySelector('#assetUsernameInput').value = "";
+        asset.querySelector('#assetPasswordInput').value = "";
+        asset.querySelector('#assetNotesInput').value = "";
+
+    }
+
+    async PopulateAndShowAssetModal(id, contents) {
+
+        console.log("Populating and displaying asset modal");
+
+        let asset = document.querySelector('#open-asset-modal');
+
+        asset.querySelector('#urlInput').value = contents.url;
+        asset.querySelector('#assetUsernameInput').value = contents.username;
+        asset.querySelector('#assetPasswordInput').value = contents.password;
+        asset.querySelector('#assetNotesInput').value = contents.notes;
+
+        this.assetModal.show();
+
+    }
+
+    async OpenAsset(context) {
+
+        let passedSecurity = await this.HandleSecurity(context.parentNode);
+        if (!passedSecurity) return 0;
+
+        let contextId = context.parentNode.id;
+        let [type, id] = contextId.split('-');
+        console.log("Context Id:", type, id);
+
+        this.BlockElement(`#${contextId}`);
+        let res = await this.GetAssetContents(id);
+        this.UnblockElement(`#${contextId}`);
+
+        let contents = JSON.parse(res.data.msg);
+
+        if (this.assetModal == false) {
+            let modalElem = document.querySelector('#open-asset-modal');
+            this.assetModal = bootstrap.Modal.getOrCreateInstance(modalElem);
+            modalElem.addEventListener('hidden.bs.modal', _ => {
+                this.ClearAssetModal();
+            });
+        }
+
+        this.PopulateAndShowAssetModal(contextId, contents);
+
+        return true;
+    }
+
     async OpenFolder(context) {
+
+        let passedSecurity = await this.HandleSecurity(context.parentNode);
+        if (!passedSecurity) return 0;
 
         context = context.parentNode;
         console.log("Got context: " + context.id);
@@ -329,11 +660,13 @@ class FileExplorer {
         // 2. Create child-cards for files category (this IS in-efficient)
         for (let file of files) {
 
+            console.log(file);
+
             let fileElem = document.createElement('div');
             fileElem.classList.add('card');
             fileElem.classList.add('file-manager-item');
             fileElem.classList.add('file');
-            fileElem.id = `file-${file.assetId}`;
+            fileElem.id = `file-${file.id}`;
 
             let sampleFileHTML = document.querySelector('#js-component-sample-file').innerHTML;
             fileElem.innerHTML = sampleFileHTML;

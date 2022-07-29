@@ -2,6 +2,7 @@ package ca.sait.backup.model.entity;
 
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,9 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 public class User {
 
+    public User(Long id) {
+        this.setId(id);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Project> projects;
@@ -26,8 +31,16 @@ public class User {
     private String password;
     private String email;
     private String phone;
+    private String address;
+    private String company;
+    private String country;
 
-    @Temporal(TemporalType.DATE)
+    private boolean disabled;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    @CreationTimestamp
     private Date creationDate;
 
 }
